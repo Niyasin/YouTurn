@@ -79,9 +79,54 @@ app.get('/check',async (req,res)=>{
     }
 });
 
-
+app.get('/test',(req,res)=>{
+    console.log("Test 😋");
+    res.send("Test 😋");
+})
 
 app.get('/loaddata',async (req,res)=>{
+    if(req.query.lat && req.query.lng){
+        let coords = [req.query.lat,req.query.lng];
+        console.log(coords);
+        let range = req.query.range || 500;
+        let docs = await location.find({
+            coordinates:{
+                $near:{
+                    $geometry:{
+                        type:'Point',
+                        coordinates:coords,
+                    },
+                    $maxDistance:range,
+                    $minDistance:0,
+                }
+            }
+        });
+        let d=[];
+        docs.forEach(e=>{
+            d.push({
+                lat:e.coordinates[0],
+                lng:e.coordinates[1],
+                range:e.range,
+                type:e.type,
+                user:e.user,
+                desc:e.desc,
+                date:e.date,
+                expiring:e.expiring,
+                verified:e.verified,
+                photos:e.photos,
+                up:0,
+                down:0,
+            });
+        })
+        res.json(d);
+    }else{
+        res.status(404);
+    }
+});
+
+
+
+app.get('/getdata',async (req,res)=>{
     if(req.query.lat && req.query.lng){
         let coords = [req.query.lat,req.query.lng];
         console.log(coords);

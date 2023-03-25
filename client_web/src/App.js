@@ -14,7 +14,7 @@ function App() {
   return (
     <div className="App">
     {center?
-      <MapContainer  center={center} zoom={20}>
+      <MapContainer  center={center} zoom={25} scrollWheelZoom={true}>
         <TileLayer url='https://tile.openstreetmap.org/{z}/{x}/{y}.png' attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'/>
       </MapContainer>
     :<></>}

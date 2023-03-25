@@ -2,7 +2,7 @@ const mongoose =require('mongoose');
 
 
 const locationSchema =new mongoose.Schema({
-    coordinates:[{type:mongoose.Types.Decimal128}],
+    coordinates:[{type:Number}],
     type:{type:String},
     user:{type:String},
     desc:{type:String},

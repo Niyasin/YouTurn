@@ -4,12 +4,15 @@ import 'package:http/http.dart' as http;
 import 'package:latlong2/latlong.dart';
 import 'package:positioned_tap_detector_2/positioned_tap_detector_2.dart';
 import '../components/new_tag_payload.dart';
+import '../components/send_http_get.dart';
 import '../components/send_http_post.dart';
 
 List<LatLng> tappedPoints = [];
 List<LatLng> confirmedPoints = [];
 List<Marker> markers = [];
 List<CircleMarker> circles = [];
+String type = "default";
+String range = "200";
 
 class TagProvider with ChangeNotifier {
   void addNewTappedPoint(latlng) {
@@ -19,10 +22,15 @@ class TagProvider with ChangeNotifier {
         width: 80,
         height: 80,
         point: latlng,
-        builder: (ctx) => const Icon(
-          Icons.location_on,
-          size: 40,
-          color: Colors.purple,
+        builder: (ctx) => GestureDetector(
+          onTap: () {
+            checkIfAlreadyTagged(latlng);
+          },
+          child: const Icon(
+            Icons.location_on,
+            size: 100,
+            color: Colors.purple,
+          ),
         ),
       );
     }).toList();
@@ -43,26 +51,49 @@ class TagProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  void addData(String typeData, String rangeData) {
+    type = typeData;
+    range = rangeData;
+    notifyListeners();
+  }
+
   List<LatLng> get getTappedPoints => tappedPoints;
   List<LatLng> get getConfirmedPoints => confirmedPoints;
   List<Marker> get getMarkers => markers;
   List<CircleMarker> get getCircles => circles;
 
   void handleTap(TapPosition tapPosition, LatLng latlng) {
-    addNewTappedPoint(latlng);
-    notifyListeners();
+    if (checkIfAlreadyTagged(latlng)) {
+      addNewTappedPoint(latlng);
+      notifyListeners();
 
-    var isSuccess = sendHttpPost(
-        lat: latlng.latitude.toString(),
-        lon: latlng.longitude.toString(),
-        range: "200",
-        type: "landslide");
+      var isSuccess = sendHttpPost(
+          lat: latlng.latitude.toString(),
+          lon: latlng.longitude.toString(),
+          range: range,
+          type: type);
 
-    isSuccess.then((value) {
-      if (value == "Success") {
-        addConfirmedPoint(latlng);
-        notifyListeners();
-      }
-    });
+      isSuccess.then((value) {
+        if (value == "Success") {
+          addConfirmedPoint(latlng);
+          notifyListeners();
+        }
+      });
+    }
   }
+}
+
+bool checkIfAlreadyTagged(LatLng latLng) {
+  var isSuccess = sendHttpGet(
+      lat: latLng.latitude.toString(), lng: latLng.longitude.toString());
+  //print("Here it is");
+  isSuccess.then((value) {
+    if (value == "success") {
+      print("Success");
+      false;
+    } else {
+      print(value);
+    }
+  });
+  return true;
 }

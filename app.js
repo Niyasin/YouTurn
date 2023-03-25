@@ -7,39 +7,80 @@ const app = express();
 
 
 app.use(bodyparser.urlencoded());
+app.use(bodyparser.json());
 app.post('/add',async(req,res)=>{
+    console.log(req.body);
     let datetime=new Date();
-    let data = {
-        coordinates:[req.body.lat,req.body.lon],
-        type:req.body.type,
-        range:req.body.range || 200,
-        desc:req.body.desc || "",
-        date:datetime,
-        status:true,
-        photos:req.body.photos || [],
-        expires:new Date(datetime.getTime()+((req.body.expires || 12) * 60 * 60 * 1000)),
+    if(req.body.lon && req.body.lat && req.body.type ){
+        let data = {
+            coordinates:[req.body.lat,req.body.lon],
+            type:req.body.type,
+            range:req.body.range || 200,
+            desc:req.body.desc || "",
+            date:datetime,
+            status:true,
+            photos:req.body.photos || [],
+            expires:new Date(datetime.getTime()+((req.body.expires || 12) * 60 * 60 * 1000)),
+        }
+        await location.create(data);
+        res.send('success');
+    }else{
+        res.send("error");
     }
-    await location.create(data);
-    res.send('success');
+});
+
+app.post('/verify',async (req,res)=>{
+    if(req.body.id){
+        let doc = await location.findOneAndUpdate({_id:id},{verified:true});
+    }
+});
+
+app.post('/upvote',async (req,res)=>{
+    if(req.body.lng && req.body.lat){
+        let coords = [req.query.lat,req.query.lng];
+        let doc = await location.findOneAndUpdate({coordinates:coords},{$inc:{votes:1}});
+    }
+});
+
+app.get('/check',async (req,res)=>{
+    let coords = [req.query.lat,req.query.lng];
+    try{
+        let docs = await location.find({
+            coordinates:coords,
+        });
+        if(docs){
+            res.send(JSON.stringify(docs));
+        }else{
+            res.send('error');
+        }
+
+    }catch(e){
+        res.status(404);
+    }
 });
 
 
 app.get('/loaddata',async (req,res)=>{
-    let coords = [req.query.lat,req.query.lng];
-    let range = req.query.range || 500;
-    let docs = await location.find({
-        coordinates:{
-            $near:{
-                $geometry:{
-                    type:'Point',
-                    coordinates:coords,
-                },
-                $maxDistance:range,
-                $minDistance:0,
+    if(req.query.lat && req.query.lng){
+        let coords = [req.query.lat,req.query.lng];
+        console.log(coords);
+        let range = req.query.range || 500;
+        let docs = await location.find({
+            coordinates:{
+                $near:{
+                    $geometry:{
+                        type:'Point',
+                        coordinates:coords,
+                    },
+                    $maxDistance:range,
+                    $minDistance:0,
+                }
             }
-        }
-    });
-    res.json(docs);
+        });
+        res.json(docs);
+    }else{
+        res.status(404);
+    }
 });
 
 

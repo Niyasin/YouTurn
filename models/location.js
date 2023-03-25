@@ -10,8 +10,10 @@ const locationSchema =new mongoose.Schema({
     expires:{type:Date},
     date:{type:Date},
     range:{type:Number},
-    status:{type:Boolean}
+    status:{type:Boolean},
+    votes:{type:Number}
 
 });
+
 
 module.exports =new mongoose.model('location',locationSchema);

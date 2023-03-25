@@ -6,6 +6,9 @@ import 'package:positioned_tap_detector_2/positioned_tap_detector_2.dart';
 import '../components/new_tag_payload.dart';
 import '../components/send_http_get.dart';
 import '../components/send_http_post.dart';
+import '../components/tag_data.dart';
+
+import 'package:location/location.dart';
 
 List<LatLng> tappedPoints = [];
 List<LatLng> confirmedPoints = [];
@@ -13,6 +16,8 @@ List<Marker> markers = [];
 List<CircleMarker> circles = [];
 String type = "default";
 String range = "200";
+final location = Location();
+late final MapController mapController = MapController();
 
 class TagProvider with ChangeNotifier {
   void addNewTappedPoint(latlng) {
@@ -28,7 +33,7 @@ class TagProvider with ChangeNotifier {
           },
           child: const Icon(
             Icons.location_on,
-            size: 100,
+            size: 60,
             color: Colors.purple,
           ),
         ),
@@ -61,6 +66,7 @@ class TagProvider with ChangeNotifier {
   List<LatLng> get getConfirmedPoints => confirmedPoints;
   List<Marker> get getMarkers => markers;
   List<CircleMarker> get getCircles => circles;
+  MapController get getMapController => mapController;
 
   void handleTap(TapPosition tapPosition, LatLng latlng) {
     if (checkIfAlreadyTagged(latlng)) {
@@ -79,6 +85,26 @@ class TagProvider with ChangeNotifier {
           notifyListeners();
         }
       });
+    }
+  }
+
+  void getAllMarkers() async {
+    try {
+      final currentLocation = await location.getLocation();
+      mapController.move(
+          LatLng(currentLocation.latitude!, currentLocation.longitude!), 14);
+      Future<List<Tag>> data = httpGetAllMarkers(
+          currentLocation.latitude!, currentLocation.longitude!);
+      data.then((value) {
+        for (var element in value) {
+          LatLng latlng = LatLng(element.lat, element.lng);
+          addNewTappedPoint(latlng);
+          addConfirmedPoint(latlng);
+          notifyListeners();
+        }
+      });
+    } catch (e) {
+      print(e.toString());
     }
   }
 }

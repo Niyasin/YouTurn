@@ -17,12 +17,9 @@ class HomeApp extends StatefulWidget {
 }
 
 class _HomeAppState extends State<HomeApp> {
-  late final MapController _mapController;
-
   @override
   void initState() {
     super.initState();
-    _mapController = MapController();
   }
 
   @override
@@ -32,11 +29,13 @@ class _HomeAppState extends State<HomeApp> {
     return Scaffold(
       body: Stack(children: [
         FlutterMap(
-          mapController: _mapController,
+          mapController: tagProvider.getMapController,
           options: MapOptions(
-              center: LatLng(11.605, 76.083), // 11.605°N 76.083°E
-              zoom: 13,
-              onTap: tagProvider.handleTap),
+            center: LatLng(11.605, 76.083), // 11.605°N 76.083°E
+            zoom: 13,
+            onTap: tagProvider.handleTap,
+            onMapReady: tagProvider.getAllMarkers,
+          ),
           children: [
             TileLayer(
               urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
@@ -53,7 +52,7 @@ class _HomeAppState extends State<HomeApp> {
             child: Container(
               decoration: const BoxDecoration(color: Colors.white),
               child: CurrentLocation(
-                mapController: _mapController,
+                mapController: tagProvider.getMapController,
               ),
             ),
           ),

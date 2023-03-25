@@ -39,6 +39,11 @@ dependencies:
   latlong2: ^0.8.1
   proj4dart: ^2.1.0
   positioned_tap_detector_2: ^1.0.4
+  json_annotation: ^4.8.0
+  json_serializable: ^6.6.1
+  build_runner: ^2.3.3
+  http: ^0.13.5
+  provider: ^6.0.5
 
 dev_dependencies:
   # The "flutter_lints" package below contains a set of recommended lints to

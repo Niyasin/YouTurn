@@ -1,8 +1,10 @@
-import {MapContainer,TileLayer,Marker,useMapEvent} from 'react-leaflet'
+import {MapContainer,TileLayer,Marker} from 'react-leaflet'
 import {useEffect,useState} from 'react'
+import Sidepanel from './components/Sidepanel';
 function App() {
-  const [center,setCenter]=useState([11.833604756618415, 75.97033436271461]);
+  const [center,setCenter]=useState(null);
   const [markers,setMarkers]=useState([]);
+  const [selected,setSelected]=useState(null);
 
   useEffect(()=>{
     if(navigator.geolocation){
@@ -33,15 +35,25 @@ function App() {
   return (
     <div className="App">
     {center?
-      <MapContainer  center={center} zoom={25} scrollWheelZoom={true} >
-        <TileLayer url='https://tile.openstreetmap.org/{z}/{x}/{y}.png' attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'/>
-        {markers.map(m=>{
-          return(<Marker position={m.coordinates} eventHandlers={{click:()=>{console.log("HELLO");}}}/>);
-        })}
-      </MapContainer>
+      <Map center={center} markers={markers} selected={selected} setSelected={setSelected}/>
+    :<></>}
+    {selected?
+      <Sidepanel data={selected} close={()=>{setSelected(null)}}/>
     :<></>}
     </div>
   );
 }
 
 export default App;
+
+
+const Map = ({center,markers,setSelected,selected})=>{
+  return(
+      <MapContainer  center={center} zoom={25} scrollWheelZoom={true} >
+        <TileLayer url='https://tile.openstreetmap.org/{z}/{x}/{y}.png' attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'/>
+        {markers.map((m,i)=>{
+          return(<Marker key ={i} position={m.coordinates} eventHandlers={{click:()=>{setSelected(m);}}}/>);
+        })}
+      </MapContainer>
+  )
+}

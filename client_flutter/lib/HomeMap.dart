@@ -1,6 +1,9 @@
+
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong/latlong.dart';
+
+import 'addDisaster.dart';
 
 class HomeMap extends StatefulWidget {
   const HomeMap({Key? key}) : super(key: key);
@@ -13,6 +16,7 @@ class _HomeMapState extends State<HomeMap> {
   LatLng point = LatLng(49.5, -0.09);
   Color theme1 = Colors.black;
   final scaffoldKey = GlobalKey<ScaffoldState>();
+  DraggableScrollableController click = DraggableScrollableController();
 
   @override
   Widget build(BuildContext context) {
@@ -32,6 +36,7 @@ class _HomeMapState extends State<HomeMap> {
               currentAccountPicture:
                   CircleAvatar(backgroundColor: Colors.black),
             ),
+            Container(width: double.infinity,color: Colors.black,height:5),
             ListTile(
               leading: Icon(Icons.person, color: theme1),
               title: Text("Profile",
@@ -39,6 +44,7 @@ class _HomeMapState extends State<HomeMap> {
                       color: theme1,
                       fontWeight: FontWeight.bold,
                       fontSize: 15)),
+
               onTap: () {},
             ),
             ListTile(
@@ -81,6 +87,7 @@ class _HomeMapState extends State<HomeMap> {
                 child: FlutterMap(
                   options: MapOptions(
                       onTap: (p) {
+                        click;
                         setState(() {
                           point = p;
                         });
@@ -118,7 +125,9 @@ class _HomeMapState extends State<HomeMap> {
                       onPressed: () {},
                       backgroundColor: Colors.white,
                       child: IconButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => const AddDis()));
+                          },
                           icon: const Icon(
                             Icons.add,
                             size: 30,
@@ -171,7 +180,7 @@ class _HomeMapState extends State<HomeMap> {
                                 width: 75,
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(30),
-                                  color: Colors.grey,
+                                  color: Colors.black,
                                 )),
                             Padding(
                               padding: const EdgeInsets.fromLTRB(10, 35, 0, 10),
@@ -287,7 +296,7 @@ class _HomeMapState extends State<HomeMap> {
                                     style:
                                         TextStyle(fontWeight: FontWeight.bold,fontSize: 20)),
                                 leading: Icon(
-                                  Icons.person_pin,
+                                  Icons.person_pin,color: Colors.black,
                                   size: 40,
                                 ),
                                 trailing: Text("45 minutes ago"),
@@ -301,12 +310,14 @@ class _HomeMapState extends State<HomeMap> {
                                 ),
                               ],
                             ),
-                            const Padding(
+                            Padding(
                               padding: EdgeInsets.only(left: 20, right: 20),
                               child: TextField(
                                 decoration: InputDecoration(
                                     labelText: "Comments",
-                                    suffixIcon: Icon(Icons.done)),
+                                    suffixIcon: IconButton(icon: Icon(Icons.done), onPressed: () {
+
+                                    },)),
                               ),
                             ),
                             Padding(
@@ -318,8 +329,8 @@ class _HomeMapState extends State<HomeMap> {
                                     child: Image.asset("assets/images/1.png",height: 75,width: 75,),
                                   ),
                                   Image.asset("assets/images/2.png",height: 75,width: 75,),
-                                  Padding(
-                                    padding: const EdgeInsets.all(20),
+                                  const Padding(
+                                    padding: EdgeInsets.all(20),
                                     child: Icon(Icons.add,size: 40,
                                   )
                                   )],
@@ -351,14 +362,14 @@ class _HomeMapState extends State<HomeMap> {
                     padding: const EdgeInsets.only(left: 8),
                     child: IconButton(
                       onPressed: () => scaffoldKey.currentState?.openDrawer(),
-                      icon: const Icon(Icons.menu),
+                      icon: const Icon(Icons.menu),color: Colors.black,
                     ),
                   ),
                   const Padding(
                     padding: EdgeInsets.only(left: 10),
                     child: Text(
                       "Search",
-                      style: TextStyle(fontSize: 17),
+                      style: TextStyle(fontSize: 17,color: Colors.black),
                     ),
                   ),
                   const Spacer(),
@@ -368,6 +379,7 @@ class _HomeMapState extends State<HomeMap> {
                         onPressed: () {},
                         icon: const Icon(
                           Icons.person_pin,
+                          color: Colors.black,
                           size: 30,
                         )),
                   )

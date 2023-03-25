@@ -1,4 +1,5 @@
-import {MapContainer,TileLayer,Marker} from 'react-leaflet'
+import {MapContainer,TileLayer,Marker,Circle} from 'react-leaflet'
+import L from 'leaflet'
 import {useEffect,useState} from 'react'
 import Sidepanel from './components/Sidepanel';
 function App() {
@@ -48,11 +49,25 @@ export default App;
 
 
 const Map = ({center,markers,setSelected,selected})=>{
+
+
   return(
-      <MapContainer  center={center} zoom={25} scrollWheelZoom={true} >
+      <MapContainer  center={[11.833272071120348, 75.9702383854215]} zoom={25} scrollWheelZoom={true} >
         <TileLayer url='https://tile.openstreetmap.org/{z}/{x}/{y}.png' attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'/>
         {markers.map((m,i)=>{
-          return(<Marker key ={i} position={m.coordinates} eventHandlers={{click:()=>{setSelected(m);}}}/>);
+          return(<>
+                  <Marker 
+                      key ={i} 
+                      position={m.coordinates} 
+                      eventHandlers={{click:()=>{setSelected(m);}}} 
+                      icon={L.icon({
+                        iconUrl:`./icons/${m.type}.png`,
+                        iconSize:[30,30]})
+                        }
+                  />
+                  <Circle center={m.coordinates} radius={m.range || 100} fillColor="#ff0000" stroke={false}/>
+                </>
+                  );
         })}
       </MapContainer>
   )

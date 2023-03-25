@@ -15,7 +15,7 @@ export default function Sidepanel({data,close}){
                         {data.status?<div className="button">Enable</div>:<div className="button verified">Disable</div>}
                     </div>
                 </div>
-
+                
                 <div className="box">
                     <h2>Expires </h2>
                     <span>{data.expires.split("T")[0]}</span>

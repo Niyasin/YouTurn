@@ -43,10 +43,6 @@ app.get('/loaddata',async (req,res)=>{
 });
 
 
-
-
-
-
 mongoose.set('strictQuery', false);
 mongoose.connect('mongodb://0.0.0.0:27017/CDNS').then(()=>{
     app.listen(8080);

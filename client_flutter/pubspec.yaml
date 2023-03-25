@@ -47,6 +47,8 @@ dependencies:
   meta: ^1.1.0
   collection: ^1.14.0
   positioned_tap_detector_2: ^1.0.0
+  firebase_auth: ^4.3.0
+  google_sign_in: ^4.5.9
 
 dev_dependencies:
   flutter_test:

@@ -1,3 +1,4 @@
+import 'package:client_flutter/loginGoogle.dart';
 import 'package:flutter/material.dart';
 
 import 'HomeMap.dart';
@@ -20,7 +21,7 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return const MaterialApp(
       debugShowCheckedModeBanner: false,
-        home: HomeMap()
+        home: loginPage()
     );
   }
 }

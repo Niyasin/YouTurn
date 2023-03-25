@@ -31,15 +31,16 @@ function App() {
           setMarkers(data);
         }
       }
-    }
-    
+  }
+  
+  
   return (
     <div className="App">
     {center?
       <Map center={center} markers={markers} selected={selected} setSelected={setSelected}/>
     :<></>}
     {selected?
-      <Sidepanel data={selected} close={()=>{setSelected(null)}}/>
+      <Sidepanel data={selected} close={()=>{setSelected(null)}} reload={()=>{loadData(center)}}/>
     :<></>}
     </div>
   );

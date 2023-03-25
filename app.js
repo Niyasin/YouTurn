@@ -31,9 +31,29 @@ app.post('/add',async(req,res)=>{
 
 app.post('/verify',async (req,res)=>{
     if(req.body.id){
-        let doc = await location.findOneAndUpdate({_id:id},{verified:true});
+        let doc = await location.findByIdAndUpdate(req.body.id,{verified:true});
+        res.send(doc)
     }
 });
+
+app.post('/enable',async (req,res)=>{
+    if(req.body.id){
+        let doc = await location.findByIdAndUpdate(req.body.id,{status:true});
+
+        res.send(doc)
+        
+    }
+});
+
+app.post('/disable',async (req,res)=>{
+    if(req.body.id){
+        let doc = await location.findByIdAndUpdate(req.body.id,{status:false});
+
+        res.send(doc)
+    }
+});
+
+
 
 app.post('/upvote',async (req,res)=>{
     if(req.body.lng && req.body.lat){
@@ -60,6 +80,7 @@ app.get('/check',async (req,res)=>{
 });
 
 
+
 app.get('/loaddata',async (req,res)=>{
     if(req.query.lat && req.query.lng){
         let coords = [req.query.lat,req.query.lng];
@@ -82,6 +103,7 @@ app.get('/loaddata',async (req,res)=>{
         res.status(404);
     }
 });
+
 
 
 mongoose.set('strictQuery', false);

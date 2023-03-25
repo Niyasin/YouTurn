@@ -1,4 +1,6 @@
+import 'package:client_flutter/provider/tag_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import 'pages/home_page.dart';
 
@@ -11,8 +13,10 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: HomeApp(),
-    );
+    return ChangeNotifierProvider(
+        create: (context) => TagProvider(),
+        child: MaterialApp(
+          home: HomeApp(),
+        ));
   }
 }

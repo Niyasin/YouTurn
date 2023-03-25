@@ -17,7 +17,7 @@ app.post('/add',async(req,res)=>{
         date:datetime,
         status:true,
         photos:req.body.photos || [],
-        expires:new Date(datetime.getTime()+(req.body.expires * 60 * 60 * 1000)),
+        expires:new Date(datetime.getTime()+((req.body.expires || 12) * 60 * 60 * 1000)),
     }
     await location.create(data);
     res.send('success');

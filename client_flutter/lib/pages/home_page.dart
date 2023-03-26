@@ -33,7 +33,11 @@ class _HomeAppState extends State<HomeApp> {
           options: MapOptions(
             center: LatLng(11.605, 76.083), // 11.605°N 76.083°E
             zoom: 13,
-            onTap: tagProvider.handleTap,
+            onTap: (tapPosition, latlng) {
+              tagProvider.addTapPosition(tapPosition, latlng);
+              print("Added Mark");
+              Navigator.pop(context);
+            },
             onMapReady: tagProvider.getAllMarkers,
           ),
           children: [

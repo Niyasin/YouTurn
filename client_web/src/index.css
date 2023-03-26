@@ -111,6 +111,7 @@ h2{
   width: 40%;
   height: 80px;
   background: #e22c2c4e;
+  color: #760e0ee3;
   border: 3px solid #e22c2ca6;
   border-radius: 20px;
   display: flex;
@@ -121,6 +122,7 @@ h2{
   width: 40%;
   height: 80px;
   background: #38b54b4e;
+  color:#0c5717db ;
   border: 3px solid #2b8a39b0;
   border-radius: 20px;
   display: flex;
@@ -128,7 +130,11 @@ h2{
   align-items: center;
 
 }
-
+h4{
+  padding: 0;
+  margin: 1%;
+  font-size:40px;
+}
 .addpopup{
   position: absolute;
   top: 80px;
@@ -146,7 +152,7 @@ h2{
 
 }
 
-select{
+select,input{
   min-width: 400px;
   min-height:10px;
   font-size: 20px;
@@ -167,4 +173,20 @@ textarea{
 .wide{
   width: 400px;
   text-align: center;
+}
+
+
+@media (max-width:1000px) {
+  .addpopup{
+    top: 0;
+    width: 95vw;
+    right: 0;
+    height: 100vh;
+  }
+  .nav{
+    display: none;
+  }
+  .leaflet-container{
+    top:0;
+  }
 }

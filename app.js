@@ -11,11 +11,25 @@ app.use(bodyparser.json());
 app.post('/add',async(req,res)=>{
     console.log(req.body);
     let datetime=new Date();
+    let range=(t)=>{
+        if(t=='Tiger'){
+            return 800
+        }else if(t=='Road Block'){
+            return 10
+        }else if(t=='Landslide'){
+            return 30
+        }else if(t=='Downed powerline'){
+            return 20
+        }else{
+            return 50
+        }
+    }
+    console.log(req.body);
     if(req.body.lon && req.body.lat && req.body.type ){
         let data = {
             coordinates:[req.body.lat,req.body.lon],
             type:req.body.type,
-            range:req.body.range || 200,
+            range:req.body.range || range(req.body.type),
             desc:req.body.desc || "",
             date:datetime,
             status:true,
@@ -58,9 +72,17 @@ app.post('/disable',async (req,res)=>{
 app.post('/upvote',async (req,res)=>{
     if(req.body.lng && req.body.lat){
         let coords = [req.query.lat,req.query.lng];
-        let doc = await location.findOneAndUpdate({coordinates:coords},{$inc:{votes:1}});
+        let doc = await location.findOneAndUpdate({coordinates:coords},{$push:{up:1}});
     }
 });
+
+app.post('/downvote',async (req,res)=>{
+    if(req.body.lng && req.body.lat){
+        let coords = [req.query.lat,req.query.lng];
+        let doc = await location.findOneAndUpdate({coordinates:coords},{$push:{down:1}});
+    }
+});
+
 
 app.get('/check',async (req,res)=>{
     let coords = [req.query.lat,req.query.lng];
@@ -68,6 +90,7 @@ app.get('/check',async (req,res)=>{
         let e = await location.findOne({
             coordinates:coords,
         });
+        console.log(e);
         if(e){
             res.send(JSON.stringify({
                 lat:e.coordinates[0],
@@ -127,8 +150,8 @@ app.get('/loaddata',async (req,res)=>{
                 expiring:e.expiring,
                 verified:e.verified,
                 photos:e.photos,
-                up:0,
-                down:0,
+                up:e.up.length,
+                down:e.down.length,
             });
         })
         res.json(d);

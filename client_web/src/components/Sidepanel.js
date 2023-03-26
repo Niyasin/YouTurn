@@ -44,6 +44,10 @@ export default function Sidepanel({data,close,reload}){
             </div>
             <div className="content">
                 <p>{data.desc}</p>
+                <div className="votes">
+                    <div className="up"><h4>{data.up}</h4>Down votes</div>
+                    <div className="down"><h4>{data.down}</h4>Up votes</div>
+                </div>
                 <div className="box">
                     <h2>Posted At</h2>
                     <span>{data.date.split("T")[0]}</span>

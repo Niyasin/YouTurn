@@ -11,7 +11,8 @@ const locationSchema =new mongoose.Schema({
     date:{type:Date},
     range:{type:Number},
     status:{type:Boolean},
-    votes:{type:Number},
+    up:[{type:String}],
+    down:[{type:String}],
     verified:{type:Boolean}
 
 });

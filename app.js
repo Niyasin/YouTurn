@@ -65,17 +65,30 @@ app.post('/upvote',async (req,res)=>{
 app.get('/check',async (req,res)=>{
     let coords = [req.query.lat,req.query.lng];
     try{
-        let docs = await location.find({
+        let e = await location.findOne({
             coordinates:coords,
         });
-        if(docs){
-            res.send(JSON.stringify(docs));
+        if(e){
+            res.send(JSON.stringify({
+                lat:e.coordinates[0],
+                lng:e.coordinates[1],
+                range:e.range,
+                type:e.type,
+                user:e.user,
+                desc:e.desc,
+                date:e.date,
+                expiring:e.expiring,
+                verified:e.verified,
+                photos:e.photos,
+                up:0,
+                down:0,
+            }));
         }else{
             res.send('error');
         }
 
     }catch(e){
-        res.status(404);
+        res.send("error");
     }
 });
 

@@ -1,3 +1,4 @@
+import 'package:client_flutter/pages/HomeMap.dart';
 import 'package:client_flutter/provider/tag_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -16,7 +17,7 @@ class MyApp extends StatelessWidget {
     return ChangeNotifierProvider(
         create: (context) => TagProvider(),
         child: MaterialApp(
-          home: HomeApp(),
+          home: HomeMap(),
         ));
   }
 }

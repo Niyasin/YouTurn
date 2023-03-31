@@ -56,12 +56,13 @@ class _CurrentLocationState extends State<CurrentLocation> {
 
     try {
       final currentLocation = await location.getLocation();
+      print("Current: $currentLocation");
       final moved = widget.mapController.move(
         LatLng(currentLocation.latitude!, currentLocation.longitude!),
-        18,
+        15,
         id: _eventKey.toString(),
       );
-
+      print("MOved: $moved");
       setIcon(moved ? Icons.gps_fixed : Icons.gps_not_fixed);
     } catch (e) {
       setIcon(Icons.gps_off);

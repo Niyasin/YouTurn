@@ -5,12 +5,16 @@ class Tag {
   final double lng;
   final String type;
   final int range;
+  final String desc;
+  final String date;
 
   Tag({
     required this.lat,
     required this.lng,
     required this.type,
     required this.range,
+    required this.desc,
+    required this.date,
   });
 
   factory Tag.fromJson(Map<String, dynamic> json) {
@@ -19,6 +23,8 @@ class Tag {
       lng: json['lng'] as double,
       type: json['type'] as String,
       range: json['range'] as int,
+      desc: json['desc'] as String,
+      date: json['date'] as String,
     );
   }
 }

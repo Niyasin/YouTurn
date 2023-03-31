@@ -5,7 +5,7 @@ const path =require('path');
 const location=require('./models/location');
 const app = express();
 
-
+app.use(express.static(path.join(__dirname,'client_web','build')));
 app.use(bodyparser.urlencoded());
 app.use(bodyparser.json());
 app.post('/add',async(req,res)=>{
@@ -42,7 +42,9 @@ app.post('/add',async(req,res)=>{
         res.send("error");
     }
 });
-
+app.get('/',(req,res)=>{
+    res.sendFile(path.join(__dirname,'client_web','build','index.html'));
+})
 app.post('/verify',async (req,res)=>{
     if(req.body.id){
         let doc = await location.findByIdAndUpdate(req.body.id,{verified:true});

@@ -99,7 +99,6 @@ const Map = ({center,markers,setSelected,selected,setPoint,Point,setAddPopup})=>
 }
 
 
-
 function Pointer({setPoint}) {
   const map = useMapEvent('click', (e) => {
     setPoint([e.latlng.lat,e.latlng.lng]);

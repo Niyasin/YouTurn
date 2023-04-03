@@ -2,6 +2,8 @@ const mongoose = require('mongoose');
 const express = require('express');
 const bodyparser =require('body-parser');
 const path =require('path');
+require('dotenv').config();
+
 const location=require('./models/location');
 const app = express();
 
@@ -190,8 +192,8 @@ app.get('/getdata',async (req,res)=>{
 
 
 mongoose.set('strictQuery', false);
-mongoose.connect('mongodb://0.0.0.0:27017/CDNS').then(()=>{
-    app.listen(8080);
+mongoose.connect(process.env.DB).then(()=>{
+    app.listen(process.env.PORT || 8080);
     console.log("SERVER STARTED");
 }).catch((err)=>{
     console.error(err);

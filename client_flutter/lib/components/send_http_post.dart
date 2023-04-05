@@ -6,7 +6,7 @@ Future<String> sendHttpPost(
     required String lon,
     required String range,
     required String type}) async {
-  final url = Uri.parse("http://192.168.9.183:8080/add");
+  final url = Uri.parse("https://youturn.onrender.com/add");
 
   try {
     var payload = NewTagPayload(lat: lat, lon: lon, range: range, type: type);

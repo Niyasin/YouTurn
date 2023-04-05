@@ -1,0 +1,28 @@
+{
+  "name": "youturn",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "npm install package.json && cd client_web && npm install package.json && npm run build && cd ../"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Niyasin/YouTurn.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Niyasin/YouTurn/issues"
+  },
+  "homepage": "https://github.com/Niyasin/YouTurn#readme",
+  "dependencies": {
+    "body-parser": "^1.20.2",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "mongoose": "^7.0.3",
+    "package.json": "^2.0.1"
+  }
+}

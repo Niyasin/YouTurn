@@ -1,8 +1,10 @@
-
+import 'package:client_flutter/Login/loginGoogle.dart';
+import 'package:client_flutter/provider/Provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
-import 'package:latlong/latlong.dart';
-
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:latlong2/latlong.dart';
+import 'package:provider/provider.dart';
 import 'addDisaster.dart';
 
 class HomeMap extends StatefulWidget {
@@ -18,8 +20,12 @@ class _HomeMapState extends State<HomeMap> {
   final scaffoldKey = GlobalKey<ScaffoldState>();
   DraggableScrollableController click = DraggableScrollableController();
 
+  final GoogleSignIn _googleSignIn = GoogleSignIn();
+
   @override
   Widget build(BuildContext context) {
+    var tagProvider_1 = Provider.of<TagProvider_1>(context);
+
     return Scaffold(
       key: scaffoldKey,
       drawer: Drawer(
@@ -36,7 +42,7 @@ class _HomeMapState extends State<HomeMap> {
               currentAccountPicture:
                   CircleAvatar(backgroundColor: Colors.black),
             ),
-            Container(width: double.infinity,color: Colors.black,height:5),
+            Container(width: double.infinity, color: Colors.black, height: 5),
             ListTile(
               leading: Icon(Icons.person, color: theme1),
               title: Text("Profile",
@@ -44,7 +50,6 @@ class _HomeMapState extends State<HomeMap> {
                       color: theme1,
                       fontWeight: FontWeight.bold,
                       fontSize: 15)),
-
               onTap: () {},
             ),
             ListTile(
@@ -72,8 +77,19 @@ class _HomeMapState extends State<HomeMap> {
                       color: theme1,
                       fontSize: 15,
                       fontWeight: FontWeight.bold)),
-              onTap: () {},
-            )
+              onTap: () {
+                _googleSignIn.signOut().then((value) {
+                  tagProvider_1.changeLogin();
+                  if (tagProvider_1.getIsLoggedIn == false) {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => loginPage(),
+                        ));
+                  }
+                }).catchError((e) {});
+              },
+            ),
           ],
         ),
       ),
@@ -86,20 +102,20 @@ class _HomeMapState extends State<HomeMap> {
                 height: constraints.maxHeight * 80,
                 child: FlutterMap(
                   options: MapOptions(
-                      onTap: (p) {
+                      onTap: (p, ln) {
                         click;
                         setState(() {
-                          point = p;
+                          point = p as LatLng;
                         });
                       },
                       center: LatLng(49.5, -0.09),
                       zoom: 10),
-                  layers: [
-                    TileLayerOptions(
+                  children: [
+                    TileLayer(
                         urlTemplate:
                             "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
                         subdomains: ['a', 'b', 'c']),
-                    MarkerLayerOptions(markers: [
+                    MarkerLayer(markers: [
                       Marker(
                           width: 100,
                           height: 100,
@@ -123,10 +139,14 @@ class _HomeMapState extends State<HomeMap> {
                     padding: const EdgeInsets.only(bottom: 18),
                     child: FloatingActionButton(
                       onPressed: () {},
+                      heroTag: "Add",
                       backgroundColor: Colors.white,
                       child: IconButton(
                           onPressed: () {
-                            Navigator.push(context, MaterialPageRoute(builder: (context) => const AddDis()));
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => const AddDis()));
                           },
                           icon: const Icon(
                             Icons.add,
@@ -139,6 +159,7 @@ class _HomeMapState extends State<HomeMap> {
                     padding: const EdgeInsets.only(bottom: 50),
                     child: FloatingActionButton(
                       onPressed: () {},
+                      heroTag: "Gps",
                       backgroundColor: Colors.white,
                       child: IconButton(
                           onPressed: () {},
@@ -293,10 +314,12 @@ class _HomeMapState extends State<HomeMap> {
                               padding: EdgeInsets.only(top: 20),
                               child: ListTile(
                                 title: Text("John Smith",
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.bold,fontSize: 20)),
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 20)),
                                 leading: Icon(
-                                  Icons.person_pin,color: Colors.black,
+                                  Icons.person_pin,
+                                  color: Colors.black,
                                   size: 40,
                                 ),
                                 trailing: Text("45 minutes ago"),
@@ -315,9 +338,10 @@ class _HomeMapState extends State<HomeMap> {
                               child: TextField(
                                 decoration: InputDecoration(
                                     labelText: "Comments",
-                                    suffixIcon: IconButton(icon: Icon(Icons.done), onPressed: () {
-
-                                    },)),
+                                    suffixIcon: IconButton(
+                                      icon: Icon(Icons.done),
+                                      onPressed: () {},
+                                    )),
                               ),
                             ),
                             Padding(
@@ -326,17 +350,26 @@ class _HomeMapState extends State<HomeMap> {
                                 children: [
                                   Padding(
                                     padding: const EdgeInsets.all(8.0),
-                                    child: Image.asset("assets/images/1.png",height: 75,width: 75,),
+                                    child: Image.asset(
+                                      "assets/images/1.png",
+                                      height: 75,
+                                      width: 75,
+                                    ),
                                   ),
-                                  Image.asset("assets/images/2.png",height: 75,width: 75,),
+                                  Image.asset(
+                                    "assets/images/2.png",
+                                    height: 75,
+                                    width: 75,
+                                  ),
                                   const Padding(
-                                    padding: EdgeInsets.all(20),
-                                    child: Icon(Icons.add,size: 40,
-                                  )
-                                  )],
+                                      padding: EdgeInsets.all(20),
+                                      child: Icon(
+                                        Icons.add,
+                                        size: 40,
+                                      ))
+                                ],
                               ),
                             ),
-
                           ],
                         );
                       }),
@@ -362,14 +395,15 @@ class _HomeMapState extends State<HomeMap> {
                     padding: const EdgeInsets.only(left: 8),
                     child: IconButton(
                       onPressed: () => scaffoldKey.currentState?.openDrawer(),
-                      icon: const Icon(Icons.menu),color: Colors.black,
+                      icon: const Icon(Icons.menu),
+                      color: Colors.black,
                     ),
                   ),
                   const Padding(
                     padding: EdgeInsets.only(left: 10),
                     child: Text(
                       "Search",
-                      style: TextStyle(fontSize: 17,color: Colors.black),
+                      style: TextStyle(fontSize: 17, color: Colors.black),
                     ),
                   ),
                   const Spacer(),

@@ -2,7 +2,7 @@ import 'package:client_flutter/HomeMap.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
-import 'Provider/Provider.dart';
+import '../Provider/Provider.dart';
 
 class loginPage extends StatefulWidget {
   const loginPage({Key? key}) : super(key: key);

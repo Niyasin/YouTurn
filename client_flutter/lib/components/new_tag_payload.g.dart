@@ -12,6 +12,8 @@ NewTagPayload _$NewTagPayloadFromJson(Map<String, dynamic> json) =>
       lon: json['lon'] as String,
       type: json['type'] as String,
       range: json['range'] as String,
+      desc: json['desc'] as String,
+      date: json['date'] as String,
     );
 
 Map<String, dynamic> _$NewTagPayloadToJson(NewTagPayload instance) =>
@@ -20,4 +22,6 @@ Map<String, dynamic> _$NewTagPayloadToJson(NewTagPayload instance) =>
       'lon': instance.lon,
       'range': instance.range,
       'type': instance.type,
+      'desc': instance.desc,
+      'date': instance.date,
     };

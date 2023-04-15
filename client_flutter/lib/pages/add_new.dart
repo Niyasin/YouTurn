@@ -77,6 +77,7 @@ class _AddDisState extends State<AddDis> {
               style: TextStyle(),
             ),
           ),
+          //text box for description
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20),
             child: TextFormField(

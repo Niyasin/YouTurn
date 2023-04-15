@@ -7,12 +7,17 @@ class NewTagPayload {
   final String lon;
   final String range;
   final String type;
+  final String desc;
+  final String date;
 
-  NewTagPayload(
-      {required this.lat,
-      required this.lon,
-      required this.type,
-      required this.range});
+  NewTagPayload({
+    required this.lat,
+    required this.lon,
+    required this.type,
+    required this.range,
+    required this.desc,
+    required this.date,
+  });
 
   Map<String, dynamic> toJson() => _$NewTagPayloadToJson(this);
 }

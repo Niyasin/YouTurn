@@ -6,13 +6,14 @@ Future<String> sendHttpPost(
     required String lon,
     required String range,
     required String type}) async {
-  final url = Uri.parse("https://youturn.onrender.com/add");
+  String uri = "192.168.155.183:8080";
+  final url = Uri.parse("http://$uri/add");
 
   try {
     var payload = NewTagPayload(lat: lat, lon: lon, range: range, type: type);
     //print(payload.toJson());
     var res = await http.post(url, body: payload.toJson());
-    print(res.body);
+    print("Post Body is $res.body");
     if (res.statusCode >= 200 && res.statusCode <= 299) {
       return "Success";
     } else if (res.statusCode >= 300 && res.statusCode <= 399) {

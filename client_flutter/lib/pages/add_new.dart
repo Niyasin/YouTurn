@@ -47,6 +47,7 @@ class _AddDisState extends State<AddDis> {
               ],
             ),
           ),
+          //drop down to choose disaster type
           Padding(
             padding: const EdgeInsets.all(20),
             child: DropdownButtonFormField(
@@ -62,7 +63,8 @@ class _AddDisState extends State<AddDis> {
                         ))
                     .toList(),
                 onChanged: (value) {
-                  tagProvider.addType(value ?? "default");
+                  tagProvider
+                      .addType(value ?? "default"); // changing disaster type
                 }),
           ),
           const SizedBox(

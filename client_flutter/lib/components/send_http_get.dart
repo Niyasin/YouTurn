@@ -9,8 +9,9 @@ Future<Tag> sendHttpGet({
   required String lat,
   required String lng,
 }) async {
-  final url =
-      Uri.parse("https://youturn.onrender.com/check/?lat=$lat&lng=$lng");
+  String uri = "192.168.155.183:8080";
+
+  final url = Uri.parse("http://$uri/check/?lat=$lat&lng=$lng");
 
   var res = await http.get(url);
   var body = res.body.toString();
@@ -31,8 +32,11 @@ Future<Tag> sendHttpGet({
 Future<List<Tag>> httpGetAllMarkers(lat, lng) async {
   lat ?? 11.605;
   lng ?? 76.083;
+  String uri = "192.168.155.183:8080";
   final url = Uri.parse(
-      "https://youturn.onrender.com/loaddata/?lat=$lat&lng=$lng&range=5000");
+
+      //"http://192.168.155.183:8080/loaddata/?lat=$lat&lng=$lng&range=5000"
+      "http://192.168.155.183:8080/loaddata/?lat=11.32631111368894&lng=75.97189772534205&range=5000");
 
   var res = await http.get(url);
   var body = res.body.toString();

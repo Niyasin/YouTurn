@@ -1,3 +1,5 @@
+//This page is opened when clicking add button.
+
 import 'package:client_flutter/provider/tag_provider.dart';
 import 'package:flutter_map/plugin_api.dart';
 import 'package:flutter/material.dart';

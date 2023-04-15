@@ -1,3 +1,5 @@
+//This is the first page of the app
+
 import 'package:client_flutter/pages/add_new.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
@@ -92,15 +94,15 @@ class _HomeMapState extends State<HomeMap> {
                 options: MapOptions(
                   center: LatLng(11.605, 76.083), // 11.605°N 76.083°E
                   zoom: 13,
-                  onTap: (tapPosition, point) {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => AddDis(
-                                textEditingController:
-                                    tagProvider.getTextEditingController)));
-                    tagProvider.handleTap(tapPosition, point);
-                  },
+                  // onTap: (tapPosition, point) {
+                  //   // Navigator.push(
+                  //   //     context,
+                  //   //     MaterialPageRoute(
+                  //   //         builder: (context) => AddDis(
+                  //   //             textEditingController:
+                  //   //                 tagProvider.getTextEditingController)));
+                  //   tagProvider.handleTap(tapPosition, point);
+                  // },
                   onMapReady: tagProvider.getAllMarkers,
                 ),
                 children: [
@@ -121,9 +123,12 @@ class _HomeMapState extends State<HomeMap> {
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 Column(mainAxisAlignment: MainAxisAlignment.end, children: [
+                  //widget to add new marker
                   Padding(
                     padding: const EdgeInsets.only(bottom: 18),
+                    //widget definition
                     child: FloatingActionButton(
+                      //function call on button press
                       onPressed: () {
                         Navigator.push(
                             context,

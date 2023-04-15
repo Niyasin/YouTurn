@@ -17,15 +17,22 @@ List<CircleMarker> circles = [];
 String type = "default";
 String range = "50";
 final location = Location();
-final MapController mapController = MapController();
+
+//controllers
+final MapController mapController = MapController(); //contoller for map
 final DraggableScrollableController bottomSheetController =
-    DraggableScrollableController();
-Tag dataSet =
-    Tag(lat: 0, lng: 0, type: "Nil", range: 0, desc: "Nil", date: "Nil");
+    DraggableScrollableController(); //controller for bottom sheet
 TextEditingController textEditingController = TextEditingController();
 
+Tag dataSet =
+    Tag(lat: 0, lng: 0, type: "Nil", range: 0, desc: "Nil", date: "Nil");
+int upvotes = 0;
+int downvotes = 0;
+
+//icon assets
 ImageIcon landSlideIcon =
     const ImageIcon(AssetImage("assets/images/landslide.png"), size: 10);
+Color landSlideColor = Color.fromARGB(83, 173, 57, 31);
 
 ImageIcon floodIcon =
     const ImageIcon(AssetImage("assets/images/flood.png"), size: 10);
@@ -33,14 +40,19 @@ Color floodColor = Colors.blue;
 
 ImageIcon powerLineIcon =
     const ImageIcon(AssetImage("assets/images/powerline.png"), size: 10);
+Color powerLineColor = Color.fromARGB(153, 255, 218, 30);
 
 ImageIcon tigerIcon =
     const ImageIcon(AssetImage("assets/images/tiger.png"), size: 10);
-Color tigerColor = const Color(0xffFA6Aff);
+Color tigerColor = const Color.fromARGB(108, 250, 107, 25);
 
 ImageIcon roadBlockIcon =
     const ImageIcon(AssetImage("assets/images/roadblock.png"), size: 10);
-Color roadColor = Colors.lightGreen;
+Color roadBlockColor = const Color.fromARGB(142, 79, 35, 25);
+
+ImageIcon otherIcon =
+    const ImageIcon(AssetImage("assets/images/flood.png"), size: 10);
+Color otherColor = Color.fromARGB(131, 33, 243, 100);
 
 List<dynamic> currentMarker = [0, 0];
 
@@ -131,22 +143,27 @@ class TagProvider with ChangeNotifier {
   Tag get getTagData => dataSet;
   TextEditingController get getTextEditingController => textEditingController;
   String get getType => type;
+  int get getDownVotes => downvotes;
+  int get getUpVotes => upvotes;
 
   void addTapPosition(TapPosition tapPosition, LatLng latlng) {
     //adding new marker
     ImageIcon icon = landSlideIcon;
     Color color = Colors.white;
 
-    if (type == "Landslide") {
-      icon = landSlideIcon;
-      color = Colors.amber;
-    } else if (type == "Tiger") {
-      icon = tigerIcon;
-      color = tigerColor;
-    } else if (type == "Road Block") {
-      icon = roadBlockIcon;
-      color = roadColor;
-    }
+    icon = getIcon(type);
+    color = getColor(type);
+    // if (type == "Landslide") {
+    //   icon = landSlideIcon;
+    //   color = landSlideColor;
+    // } else if (type == "Tiger") {
+    //   icon = tigerIcon;
+    //   color = tigerColor;
+    // } else if (type == "Road Block") {
+    //   icon = roadBlockIcon;
+    //   color = roadColor;
+    // }
+    String desc = textEditingController.text;
 
     addNewTappedPoint(latlng, icon);
     notifyListeners();
@@ -155,7 +172,9 @@ class TagProvider with ChangeNotifier {
         lat: latlng.latitude.toString(),
         lon: latlng.longitude.toString(),
         range: range,
-        type: type);
+        type: type,
+        desc: desc,
+        date: DateTime.now().toString());
 
     isSuccess.then((value) {
       if (value == "Success") {
@@ -181,18 +200,20 @@ class TagProvider with ChangeNotifier {
       data.then((value) {
         for (var element in value) {
           print(element.type);
-          if (element.type == "Landslide") {
-            icon = landSlideIcon;
-            color = currentMarker[1] = Colors.amber;
-          } else if (element.type == "Tiger") {
-            print("Setting color to $tigerColor");
-            icon = tigerIcon;
-            color = tigerColor;
-            print("Color set to $color");
-          } else if (element.type == "Road Block") {
-            icon = roadBlockIcon;
-            color = roadColor;
-          }
+          icon = getIcon(element.type);
+          color = getColor(element.type);
+          // if (element.type == "Landslide") {
+          //   icon = landSlideIcon;
+          //   color = currentMarker[1] = landSlideColor;
+          // } else if (element.type == "Tiger") {
+          //   print("Setting color to $tigerColor");
+          //   icon = tigerIcon;
+          //   color = tigerColor;
+          //   print("Color set to $color");
+          // } else if (element.type == "Road Block") {
+          //   icon = roadBlockIcon;
+          //   color = roadColor;
+          // }
           print("Current color: $color");
           LatLng latlng = LatLng(element.lat, element.lng);
           addNewTappedPoint(latlng, icon);
@@ -212,14 +233,60 @@ class TagProvider with ChangeNotifier {
     //print("Here it is");
     isSuccess.then((value) {
       print(value);
-      //setDataSet(value);
+      setDataSet(value); //updating data for bottom sheet
       if (value.type == "Nil") {
         return false;
       }
     });
     return true;
   }
+
+  void setDataSet(Tag data) {
+    //sets the data read by bottom sheet
+    dataSet = data;
+    notifyListeners();
+  }
+
+  ImageIcon getIcon(String type) {
+    if (type == "Landslide") {
+      return landSlideIcon;
+    } else if (type == "Tiger") {
+      return tigerIcon;
+    } else if (type == "Road Block") {
+      return roadBlockIcon;
+    } else if (type == "Downed powerline") {
+      return powerLineIcon;
+    } else {
+      return otherIcon;
+    }
+  }
+
+  Color getColor(String type) {
+    if (type == "Landslide") {
+      return landSlideColor;
+    } else if (type == "Tiger") {
+      return tigerColor;
+    } else if (type == "Road Block") {
+      return roadBlockColor;
+    } else if (type == "Downed powerline") {
+      return powerLineColor;
+    } else {
+      return otherColor;
+    }
+  }
+
+  void doUpVote() {
+    upvotes++;
+    notifyListeners();
+  }
+
+  void doDownVote() {
+    downvotes++;
+    notifyListeners();
+  }
 }
+
+
 
   // void handleTap(TapPosition tapPosition, LatLng latlng) {
   //   ImageIcon icon = landSlideIcon;
@@ -258,20 +325,6 @@ class TagProvider with ChangeNotifier {
   //   }
   // }
 
-  // ImageIcon getIcon(String type) {
-  //   ImageIcon landSlideIcon =
-  //       const ImageIcon(AssetImage("assets/images/landslide.png"), size: 10);
-
-  //   if (type == "Landslide") {
-  //     return landSlideIcon;
-  //   } else if (type == "Tiger") {
-  //     return tigerIcon;
-  //   } else if (type == "Road Block") {
-  //     return roadBlockIcon;
-  //   }
-
-  //   return landSlideIcon;
-  // }
 
   // void addMarkerMetaData({required Icon icon, required Color color}) {
   //   currentMarker[0] = icon;
@@ -321,9 +374,4 @@ class TagProvider with ChangeNotifier {
   //   } catch (e) {
   //     print(e.toString());
   //   }
-  // }
-
-  // void setDataSet(Tag data) {
-  //   dataSet = data;
-  //   notifyListeners();
   // }

@@ -221,7 +221,7 @@ class _HomeMapState extends State<HomeMap> {
                                       "Verified",
                                       style: TextStyle(
                                           fontWeight: FontWeight.w500,
-                                          fontSize: 20),
+                                          fontSize: 3),
                                     ),
                                   ),
                                   const Padding(
@@ -244,27 +244,33 @@ class _HomeMapState extends State<HomeMap> {
                                             BorderRadius.circular(12)),
                                     height: 40,
                                     width: 150,
-                                    child: Row(
-                                      children: const [
-                                        Padding(
-                                          padding: EdgeInsets.only(left: 30),
-                                          child: Icon(
-                                            Icons.thumb_up,
-                                            color: Colors.white,
-                                            size: 20,
+                                    child: InkWell(
+                                      onTap: () {
+                                        tagProvider.doUpVote();
+                                      },
+                                      child: Row(
+                                        children: [
+                                          const Padding(
+                                            padding: EdgeInsets.only(left: 30),
+                                            child: Icon(
+                                              Icons.thumb_up,
+                                              color: Colors.white,
+                                              size: 20,
+                                            ),
                                           ),
-                                        ),
-                                        Padding(
-                                          padding: EdgeInsets.only(left: 30),
-                                          child: Text(
-                                            "328",
-                                            style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 18,
-                                                fontWeight: FontWeight.bold),
+                                          Padding(
+                                            padding:
+                                                const EdgeInsets.only(left: 30),
+                                            child: Text(
+                                              tagProvider.getUpVotes.toString(),
+                                              style: const TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 18,
+                                                  fontWeight: FontWeight.bold),
+                                            ),
                                           ),
-                                        ),
-                                      ],
+                                        ],
+                                      ),
                                     ),
                                   ),
                                   Container(
@@ -274,27 +280,34 @@ class _HomeMapState extends State<HomeMap> {
                                             BorderRadius.circular(12)),
                                     height: 40,
                                     width: 150,
-                                    child: Row(
-                                      children: const [
-                                        Padding(
-                                          padding: EdgeInsets.only(left: 30),
-                                          child: Icon(
-                                            Icons.thumb_down,
-                                            color: Colors.white,
-                                            size: 20,
+                                    child: InkWell(
+                                      onTap: () {
+                                        tagProvider.doDownVote();
+                                      },
+                                      child: Row(
+                                        children: [
+                                          const Padding(
+                                            padding: EdgeInsets.only(left: 30),
+                                            child: Icon(
+                                              Icons.thumb_down,
+                                              color: Colors.white,
+                                              size: 20,
+                                            ),
                                           ),
-                                        ),
-                                        Padding(
-                                          padding: EdgeInsets.only(left: 30),
-                                          child: Text(
-                                            "5",
-                                            style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 18,
-                                                fontWeight: FontWeight.bold),
+                                          Padding(
+                                            padding:
+                                                const EdgeInsets.only(left: 30),
+                                            child: Text(
+                                              tagProvider.getDownVotes
+                                                  .toString(),
+                                              style: const TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 18,
+                                                  fontWeight: FontWeight.bold),
+                                            ),
                                           ),
-                                        ),
-                                      ],
+                                        ],
+                                      ),
                                     ),
                                   )
                                 ],

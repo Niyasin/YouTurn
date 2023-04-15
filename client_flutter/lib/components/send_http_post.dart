@@ -1,16 +1,20 @@
 import 'new_tag_payload.dart';
 import 'package:http/http.dart' as http;
 
-Future<String> sendHttpPost(
-    {required String lat,
-    required String lon,
-    required String range,
-    required String type}) async {
-  String uri = "192.168.155.183:8080";
+Future<String> sendHttpPost({
+  required String lat,
+  required String lon,
+  required String range,
+  required String type,
+  required String desc,
+  required String date,
+}) async {
+  String uri = "192.168.249.145:8080";
   final url = Uri.parse("http://$uri/add");
 
   try {
-    var payload = NewTagPayload(lat: lat, lon: lon, range: range, type: type);
+    var payload = NewTagPayload(
+        lat: lat, lon: lon, range: range, type: type, desc: desc, date: date);
     //print(payload.toJson());
     var res = await http.post(url, body: payload.toJson());
     print("Post Body is $res.body");

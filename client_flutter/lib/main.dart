@@ -1,13 +1,14 @@
-
-import 'package:client_flutter/Login/loginGoogle.dart';
 import 'package:client_flutter/provider/Provider.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'SplashScreen.dart';
 
-
-void main() {
-  runApp(const MyApp());
-}
+  Future<void> main() async {
+    WidgetsFlutterBinding.ensureInitialized();
+    await Firebase.initializeApp();
+    runApp(const MyApp());
+  }
 
 class MyApp extends StatefulWidget {
   const MyApp({super.key});
@@ -23,6 +24,7 @@ class _MyAppState extends State<MyApp> {
     return ChangeNotifierProvider(
         create: (context) => TagProvider_1(),
         child:
-            MaterialApp(debugShowCheckedModeBanner: false, home: loginPage()));
+            const MaterialApp(debugShowCheckedModeBanner: false,
+                home: SplashScreen()));
   }
 }

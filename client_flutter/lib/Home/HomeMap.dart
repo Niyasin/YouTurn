@@ -32,7 +32,7 @@ class _HomeMapState extends State<HomeMap> {
         backgroundColor: Colors.white,
         child: ListView(
           children: [
-            const UserAccountsDrawerHeader(
+             UserAccountsDrawerHeader(
               decoration: BoxDecoration(color: Colors.white),
               accountName: Text("Clement Mathew",
                   style: TextStyle(
@@ -72,19 +72,19 @@ class _HomeMapState extends State<HomeMap> {
             ),
             ListTile(
               leading: Icon(Icons.exit_to_app, color: theme1),
-              title: Text("Signout",
+              title: Text("Sign-out",
                   style: TextStyle(
                       color: theme1,
                       fontSize: 15,
                       fontWeight: FontWeight.bold)),
-              onTap: () {
-                _googleSignIn.signOut().then((value) {
+              onTap: () async {
+                await _googleSignIn.signOut().then((value) {
                   tagProvider_1.changeLogin();
                   if (tagProvider_1.getIsLoggedIn == false) {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => loginPage(),
+                          builder: (context) => const LoginPage(),
                         ));
                   }
                 }).catchError((e) {});
@@ -114,7 +114,7 @@ class _HomeMapState extends State<HomeMap> {
                     TileLayer(
                         urlTemplate:
                             "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-                        subdomains: ['a', 'b', 'c']),
+                        subdomains: const ['a', 'b', 'c']),
                     MarkerLayer(markers: [
                       Marker(
                           width: 100,

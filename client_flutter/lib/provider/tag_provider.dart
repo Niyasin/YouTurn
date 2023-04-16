@@ -17,6 +17,7 @@ List<CircleMarker> circles = [];
 String type = "default";
 String range = "50";
 final location = Location();
+bool _isLoggedIn = false;
 
 //controllers
 final MapController mapController = MapController(); //contoller for map
@@ -24,8 +25,15 @@ final DraggableScrollableController bottomSheetController =
     DraggableScrollableController(); //controller for bottom sheet
 TextEditingController textEditingController = TextEditingController();
 
-Tag dataSet =
-    Tag(lat: 0, lng: 0, type: "Nil", range: 0, desc: "Nil", date: "Nil");
+Tag dataSet = Tag(
+    lat: 0,
+    lng: 0,
+    type: "Nil",
+    range: 0,
+    desc: "Nil",
+    date: "Nil",
+    up: 0,
+    down: 0);
 int upvotes = 0;
 int downvotes = 0;
 
@@ -77,26 +85,6 @@ class TagProvider with ChangeNotifier {
 
     markers.add(mk);
     notifyListeners();
-
-    // markers = tappedPoints.map((latlng) {
-    //   return Marker(
-    //     width: 80,
-    //     height: 80,
-    //     point: latlng,
-    //     builder: (ctx) => GestureDetector(
-    //       onTap: () {
-    //         bottomSheetController.animateTo(.80,
-    //             duration: const Duration(seconds: 1), curve: Curves.linear);
-    //         // bottomSheetController.jumpTo(0.8);
-    //         findTagExists(latlng);
-    //       },
-    //       child: icon,
-    //     ),
-    //   );
-    // }).toList();
-    // for (var i = 0; i < markers.length; i++) {
-    //   print(markers[i]);
-    // }
   }
 
   void addConfirmedPoint(latlng, color) {
@@ -112,20 +100,6 @@ class TagProvider with ChangeNotifier {
       useRadiusInMeter: true,
     );
     circles.add(cm);
-    // circles = confirmedPoints.map((latlng) {
-    //   return CircleMarker(
-    //       point: latlng,
-    //       color: color,
-    //       borderStrokeWidth: 1,
-    //       borderColor: Colors.white,
-    //       useRadiusInMeter: true,
-    //       radius: 100);
-    // }).toList();
-    // for (var i = 0; i < circles.length; i++) {
-    //   var ele = circles[i];
-    //   print("Color assigned");
-    //   print(ele.color);
-    // }
     notifyListeners();
   }
 
@@ -145,6 +119,7 @@ class TagProvider with ChangeNotifier {
   String get getType => type;
   int get getDownVotes => downvotes;
   int get getUpVotes => upvotes;
+  bool get getIsLoggedIn => _isLoggedIn;
 
   void addTapPosition(TapPosition tapPosition, LatLng latlng) {
     //adding new marker
@@ -153,28 +128,21 @@ class TagProvider with ChangeNotifier {
 
     icon = getIcon(type);
     color = getColor(type);
-    // if (type == "Landslide") {
-    //   icon = landSlideIcon;
-    //   color = landSlideColor;
-    // } else if (type == "Tiger") {
-    //   icon = tigerIcon;
-    //   color = tigerColor;
-    // } else if (type == "Road Block") {
-    //   icon = roadBlockIcon;
-    //   color = roadColor;
-    // }
     String desc = textEditingController.text;
 
     addNewTappedPoint(latlng, icon);
     notifyListeners();
 
     var isSuccess = sendHttpPost(
-        lat: latlng.latitude.toString(),
-        lon: latlng.longitude.toString(),
-        range: range,
-        type: type,
-        desc: desc,
-        date: DateTime.now().toString());
+      lat: latlng.latitude.toString(),
+      lng: latlng.longitude.toString(),
+      range: range,
+      type: type,
+      desc: desc,
+      date: DateTime.now().toString(),
+      up: upvotes.toString(),
+      down: downvotes.toString(),
+    );
 
     isSuccess.then((value) {
       if (value == "Success") {
@@ -199,26 +167,11 @@ class TagProvider with ChangeNotifier {
           currentLocation.latitude!, currentLocation.longitude!);
       data.then((value) {
         for (var element in value) {
-          print(element.type);
           icon = getIcon(element.type);
           color = getColor(element.type);
-          // if (element.type == "Landslide") {
-          //   icon = landSlideIcon;
-          //   color = currentMarker[1] = landSlideColor;
-          // } else if (element.type == "Tiger") {
-          //   print("Setting color to $tigerColor");
-          //   icon = tigerIcon;
-          //   color = tigerColor;
-          //   print("Color set to $color");
-          // } else if (element.type == "Road Block") {
-          //   icon = roadBlockIcon;
-          //   color = roadColor;
-          // }
-          print("Current color: $color");
           LatLng latlng = LatLng(element.lat, element.lng);
           addNewTappedPoint(latlng, icon);
           addConfirmedPoint(latlng, color);
-          print(element);
           notifyListeners();
         }
       });
@@ -244,6 +197,8 @@ class TagProvider with ChangeNotifier {
   void setDataSet(Tag data) {
     //sets the data read by bottom sheet
     dataSet = data;
+    upvotes = dataSet.up;
+    downvotes = dataSet.down;
     notifyListeners();
   }
 
@@ -277,101 +232,43 @@ class TagProvider with ChangeNotifier {
 
   void doUpVote() {
     upvotes++;
+    var isSuccess = doUpVotePost(
+        lat: dataSet.lat.toString(),
+        lng: dataSet.lng.toString(),
+        range: range,
+        type: type,
+        desc: dataSet.desc,
+        date: dataSet.date,
+        up: dataSet.up.toString(),
+        down: dataSet.down.toString());
+    isSuccess.then((value) {
+      print(value);
+    });
     notifyListeners();
   }
 
   void doDownVote() {
     downvotes++;
+    var isSuccess = doDownVotePost(
+        lat: dataSet.lat.toString(),
+        lng: dataSet.lng.toString(),
+        range: range,
+        type: type,
+        desc: dataSet.desc,
+        date: dataSet.date,
+        up: dataSet.up.toString(),
+        down: dataSet.down.toString());
+    isSuccess.then((value) {
+      print(value);
+    });
     notifyListeners();
   }
+
+  void changeLogin() {
+    if (_isLoggedIn == true) {
+      _isLoggedIn = false;
+    } else {
+      _isLoggedIn = true;
+    }
+  }
 }
-
-
-
-  // void handleTap(TapPosition tapPosition, LatLng latlng) {
-  //   ImageIcon icon = landSlideIcon;
-  //   Color color = Colors.blue;
-
-  //   if (type == "Landslide") {
-  //     icon = landSlideIcon;
-  //     color = Colors.amber;
-  //   } else if (type == "Tiger") {
-  //     icon = tigerIcon;
-  //     color = tigerColor;
-  //   } else if (type == "Road Block") {
-  //     icon = roadBlockIcon;
-  //     color = roadColor;
-  //   }
-  //   if (!findTagExists(latlng)) {
-  //     addNewTappedPoint(latlng, icon);
-  //     notifyListeners();
-
-  //     var isSuccess = sendHttpPost(
-  //         lat: latlng.latitude.toString(),
-  //         lon: latlng.longitude.toString(),
-  //         range: range,
-  //         type: type);
-
-  //     isSuccess.then((value) {
-  //       if (value == "Success") {
-  //         print("Delwin: ");
-  //         print(color);
-  //         addConfirmedPoint(latlng, color);
-  //         notifyListeners();
-  //       } else {
-  //         print("Not success");
-  //       }
-  //     });
-  //   }
-  // }
-
-
-  // void addMarkerMetaData({required Icon icon, required Color color}) {
-  //   currentMarker[0] = icon;
-  //   currentMarker[1] = color;
-  // }
-
-  // Tag findExistingTag(LatLng latLng) {
-  //   Tag data =
-  //       Tag(lat: 0, lng: 0, type: "Nil", range: 0, desc: "Nil", date: "Nil");
-  //   var isSuccess = sendHttpGet(
-  //       lat: latLng.latitude.toString(), lng: latLng.longitude.toString());
-  //   //print("Here it is");
-  //   isSuccess.then((value) {
-  //     print(value);
-  //     data = value;
-  //   });
-  //   return data;
-  // }
-
-  // void getAllMarkersNext(MapEvent event) async {
-  //   ImageIcon icon = landSlideIcon;
-  //   Color color = Colors.black;
-  //   try {
-  //     final currentLocation = await location.getLocation();
-  //     mapController.move(
-  //         LatLng(currentLocation.latitude!, currentLocation.longitude!), 10);
-  //     Future<List<Tag>> data = httpGetAllMarkers(
-  //         currentLocation.latitude!, currentLocation.longitude!);
-  //     data.then((value) {
-  //       for (var element in value) {
-  //         if (element.type == "Landslide") {
-  //           icon = landSlideIcon;
-  //           color = currentMarker[1] = Colors.amber;
-  //         } else if (type == "Tiger") {
-  //           icon = tigerIcon;
-  //           color = tigerColor;
-  //         } else if (type == "Road Block") {
-  //           icon = roadBlockIcon;
-  //           color = roadColor;
-  //         }
-  //         LatLng latlng = LatLng(element.lat, element.lng);
-  //         addNewTappedPoint(latlng, icon);
-  //         addConfirmedPoint(latlng, color);
-  //         notifyListeners();
-  //       }
-  //     });
-  //   } catch (e) {
-  //     print(e.toString());
-  //   }
-  // }

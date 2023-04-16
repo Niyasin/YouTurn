@@ -1,17 +1,11 @@
-//This is the first page of the app
-
-import 'package:client_flutter/pages/add_new.dart';
+import 'package:client_flutter/Login/loginGoogle.dart';
+import 'package:client_flutter/provider/Provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-//import 'package:latlong/latlong.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:provider/provider.dart';
-//import '../controllers/bottom_sheet.dart';
-
-import '../Login/loginGoogle.dart';
-import '../components/current_location.dart';
-import '../provider/tag_provider.dart';
+import 'addDisaster.dart';
 
 class HomeMap extends StatefulWidget {
   const HomeMap({Key? key}) : super(key: key);
@@ -24,12 +18,13 @@ class _HomeMapState extends State<HomeMap> {
   LatLng point = LatLng(49.5, -0.09);
   Color theme1 = Colors.black;
   final scaffoldKey = GlobalKey<ScaffoldState>();
+  DraggableScrollableController click = DraggableScrollableController();
 
   final GoogleSignIn _googleSignIn = GoogleSignIn();
 
   @override
   Widget build(BuildContext context) {
-    var tagProvider = Provider.of<TagProvider>(context);
+    var tagProvider_1 = Provider.of<TagProvider_1>(context);
 
     return Scaffold(
       key: scaffoldKey,
@@ -37,7 +32,7 @@ class _HomeMapState extends State<HomeMap> {
         backgroundColor: Colors.white,
         child: ListView(
           children: [
-            const UserAccountsDrawerHeader(
+             UserAccountsDrawerHeader(
               decoration: BoxDecoration(color: Colors.white),
               accountName: Text("Clement Mathew",
                   style: TextStyle(
@@ -77,15 +72,15 @@ class _HomeMapState extends State<HomeMap> {
             ),
             ListTile(
               leading: Icon(Icons.exit_to_app, color: theme1),
-              title: Text("Signout",
+              title: Text("Sign-out",
                   style: TextStyle(
                       color: theme1,
                       fontSize: 15,
                       fontWeight: FontWeight.bold)),
               onTap: () async {
                 await _googleSignIn.signOut().then((value) {
-                  tagProvider.changeLogin();
-                  if (tagProvider.getIsLoggedIn == false) {
+                  tagProvider_1.changeLogin();
+                  if (tagProvider_1.getIsLoggedIn == false) {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -94,7 +89,7 @@ class _HomeMapState extends State<HomeMap> {
                   }
                 }).catchError((e) {});
               },
-            )
+            ),
           ],
         ),
       ),
@@ -104,25 +99,35 @@ class _HomeMapState extends State<HomeMap> {
           LayoutBuilder(
               builder: (BuildContext context, BoxConstraints constraints) {
             return SizedBox(
-              height: constraints.maxHeight * 80,
-              child: FlutterMap(
-                mapController: tagProvider.getMapController,
-                options: MapOptions(
-                  center: LatLng(11.3263187, 75.9719164), // 11.605°N 76.083°E
-                  zoom: 13,
-                  onMapReady: tagProvider.getAllMarkers,
-                ),
-                children: [
-                  TileLayer(
-                    urlTemplate:
-                        'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                    userAgentPackageName: 'dev.fleaflet.flutter_map.example',
-                  ),
-                  CircleLayer(circles: tagProvider.getCircles),
-                  MarkerLayer(markers: tagProvider.getMarkers),
-                ],
-              ),
-            );
+                height: constraints.maxHeight * 80,
+                child: FlutterMap(
+                  options: MapOptions(
+                      onTap: (p, ln) {
+                        click;
+                        setState(() {
+                          point = p as LatLng;
+                        });
+                      },
+                      center: LatLng(11.218826333258638, 75.7268),
+                      zoom: 10),
+                  children: [
+                    TileLayer(
+                        urlTemplate:
+                            "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+                        subdomains: const ['a', 'b', 'c']),
+                    MarkerLayer(markers: [
+                      Marker(
+                          width: 100,
+                          height: 100,
+                          point: point,
+                          builder: (ctx) => const Icon(
+                                Icons.location_on,
+                                color: Colors.red,
+                                size: 30,
+                              )),
+                    ])
+                  ],
+                ));
           }),
           Padding(
             padding: const EdgeInsets.only(right: 15),
@@ -130,40 +135,39 @@ class _HomeMapState extends State<HomeMap> {
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 Column(mainAxisAlignment: MainAxisAlignment.end, children: [
-                  //widget to add new marker
                   Padding(
                     padding: const EdgeInsets.only(bottom: 18),
-                    //widget definition
                     child: FloatingActionButton(
-                      //function call on button press
-                      onPressed: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: ((context) => AddDis(
-                                      textEditingController:
-                                          tagProvider.getTextEditingController,
-                                    ))));
-                      },
+                      onPressed: () {},
                       heroTag: "Add",
                       backgroundColor: Colors.white,
-                      child: const Icon(
-                        Icons.add,
-                        size: 30,
-                        color: Colors.blue,
-                      ),
+                      child: IconButton(
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => const AddDis()));
+                          },
+                          icon: const Icon(
+                            Icons.add,
+                            size: 30,
+                            color: Colors.black,
+                          )),
                     ),
                   ),
                   Padding(
                     padding: const EdgeInsets.only(bottom: 50),
-                    child: Container(
-                      decoration: const BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: Colors.white,
-                      ),
-                      child: CurrentLocation(
-                        mapController: tagProvider.getMapController,
-                      ),
+                    child: FloatingActionButton(
+                      onPressed: () {},
+                      heroTag: "Gps",
+                      backgroundColor: Colors.white,
+                      child: IconButton(
+                          onPressed: () {},
+                          icon: const Icon(
+                            Icons.gps_fixed,
+                            size: 30,
+                            color: Colors.black,
+                          )),
                     ),
                   ),
                 ]),
@@ -171,8 +175,6 @@ class _HomeMapState extends State<HomeMap> {
             ),
           ),
           DraggableScrollableSheet(
-              controller: tagProvider.getBottomSheetController,
-              snap: true,
               maxChildSize: .80,
               initialChildSize: 0.05,
               minChildSize: 0.05,
@@ -199,32 +201,31 @@ class _HomeMapState extends State<HomeMap> {
                                 width: 75,
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(30),
-                                  color: Colors.grey,
+                                  color: Colors.black,
                                 )),
                             Padding(
                               padding: const EdgeInsets.fromLTRB(10, 35, 0, 10),
                               child: Row(
-                                children: [
+                                children: const [
                                   Padding(
-                                    padding: const EdgeInsets.only(left: 20),
+                                    padding: EdgeInsets.only(left: 20),
                                     child: Text(
-                                      tagProvider.getTagData.type,
-                                      style: const TextStyle(
+                                      "Landslide",
+                                      style: TextStyle(
                                           color: Colors.black,
-                                          fontSize: 20,
+                                          fontSize: 30,
                                           fontWeight: FontWeight.bold),
                                     ),
                                   ),
-                                  //const Spacer(),
-                                  const Padding(
-                                    padding:
-                                        EdgeInsets.only(right: 10, left: 30),
+                                  Spacer(),
+                                  Padding(
+                                    padding: EdgeInsets.only(right: 10),
                                     child: Icon(
                                       Icons.verified,
                                       color: Colors.blue,
                                     ),
                                   ),
-                                  const Padding(
+                                  Padding(
                                     padding: EdgeInsets.only(right: 15),
                                     child: Text(
                                       "Verified",
@@ -233,7 +234,7 @@ class _HomeMapState extends State<HomeMap> {
                                           fontSize: 20),
                                     ),
                                   ),
-                                  const Padding(
+                                  Padding(
                                     padding: EdgeInsets.only(right: 20),
                                     child: Icon(Icons.edit),
                                   )
@@ -253,33 +254,27 @@ class _HomeMapState extends State<HomeMap> {
                                             BorderRadius.circular(12)),
                                     height: 40,
                                     width: 150,
-                                    child: InkWell(
-                                      onTap: () {
-                                        tagProvider.doUpVote();
-                                      },
-                                      child: Row(
-                                        children: [
-                                          const Padding(
-                                            padding: EdgeInsets.only(left: 30),
-                                            child: Icon(
-                                              Icons.thumb_up,
-                                              color: Colors.white,
-                                              size: 20,
-                                            ),
+                                    child: Row(
+                                      children: const [
+                                        Padding(
+                                          padding: EdgeInsets.only(left: 30),
+                                          child: Icon(
+                                            Icons.thumb_up,
+                                            color: Colors.white,
+                                            size: 20,
                                           ),
-                                          Padding(
-                                            padding:
-                                                const EdgeInsets.only(left: 30),
-                                            child: Text(
-                                              tagProvider.getUpVotes.toString(),
-                                              style: const TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize: 18,
-                                                  fontWeight: FontWeight.bold),
-                                            ),
+                                        ),
+                                        Padding(
+                                          padding: EdgeInsets.only(left: 30),
+                                          child: Text(
+                                            "328",
+                                            style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.bold),
                                           ),
-                                        ],
-                                      ),
+                                        ),
+                                      ],
                                     ),
                                   ),
                                   Container(
@@ -289,34 +284,27 @@ class _HomeMapState extends State<HomeMap> {
                                             BorderRadius.circular(12)),
                                     height: 40,
                                     width: 150,
-                                    child: InkWell(
-                                      onTap: () {
-                                        tagProvider.doDownVote();
-                                      },
-                                      child: Row(
-                                        children: [
-                                          const Padding(
-                                            padding: EdgeInsets.only(left: 30),
-                                            child: Icon(
-                                              Icons.thumb_down,
-                                              color: Colors.white,
-                                              size: 20,
-                                            ),
+                                    child: Row(
+                                      children: const [
+                                        Padding(
+                                          padding: EdgeInsets.only(left: 30),
+                                          child: Icon(
+                                            Icons.thumb_down,
+                                            color: Colors.white,
+                                            size: 20,
                                           ),
-                                          Padding(
-                                            padding:
-                                                const EdgeInsets.only(left: 30),
-                                            child: Text(
-                                              tagProvider.getDownVotes
-                                                  .toString(),
-                                              style: const TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize: 18,
-                                                  fontWeight: FontWeight.bold),
-                                            ),
+                                        ),
+                                        Padding(
+                                          padding: EdgeInsets.only(left: 30),
+                                          child: Text(
+                                            "5",
+                                            style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.bold),
                                           ),
-                                        ],
-                                      ),
+                                        ),
+                                      ],
                                     ),
                                   )
                                 ],
@@ -331,26 +319,29 @@ class _HomeMapState extends State<HomeMap> {
                                         fontSize: 20)),
                                 leading: Icon(
                                   Icons.person_pin,
+                                  color: Colors.black,
                                   size: 40,
                                 ),
                                 trailing: Text("45 minutes ago"),
                               ),
                             ),
                             Row(
-                              children: [
+                              children: const [
                                 Padding(
-                                  padding:
-                                      const EdgeInsets.fromLTRB(20, 10, 15, 5),
-                                  child: Text(tagProvider.getTagData.desc),
+                                  padding: EdgeInsets.fromLTRB(20, 10, 15, 5),
+                                  child: Text("Encountered a sudden landslide"),
                                 ),
                               ],
                             ),
-                            const Padding(
+                            Padding(
                               padding: EdgeInsets.only(left: 20, right: 20),
                               child: TextField(
                                 decoration: InputDecoration(
                                     labelText: "Comments",
-                                    suffixIcon: Icon(Icons.done)),
+                                    suffixIcon: IconButton(
+                                      icon: Icon(Icons.done),
+                                      onPressed: () {},
+                                    )),
                               ),
                             ),
                             Padding(
@@ -405,13 +396,14 @@ class _HomeMapState extends State<HomeMap> {
                     child: IconButton(
                       onPressed: () => scaffoldKey.currentState?.openDrawer(),
                       icon: const Icon(Icons.menu),
+                      color: Colors.black,
                     ),
                   ),
                   const Padding(
                     padding: EdgeInsets.only(left: 10),
                     child: Text(
                       "Search",
-                      style: TextStyle(fontSize: 17),
+                      style: TextStyle(fontSize: 17, color: Colors.black),
                     ),
                   ),
                   const Spacer(),
@@ -421,6 +413,7 @@ class _HomeMapState extends State<HomeMap> {
                         onPressed: () {},
                         icon: const Icon(
                           Icons.person_pin,
+                          color: Colors.black,
                           size: 30,
                         )),
                   )

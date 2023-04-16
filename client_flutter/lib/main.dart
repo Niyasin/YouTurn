@@ -1,9 +1,14 @@
 import 'package:client_flutter/pages/HomeMap.dart';
 import 'package:client_flutter/provider/tag_provider.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-void main() {
+import 'Login/loginGoogle.dart';
+
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(const MyApp());
 }
 
@@ -15,7 +20,7 @@ class MyApp extends StatelessWidget {
     return ChangeNotifierProvider(
         create: (context) => TagProvider(),
         child: const MaterialApp(
-          home: HomeMap(),
+          home: LoginPage(),
         ));
   }
 }

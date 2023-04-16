@@ -3,13 +3,15 @@ const express = require('express');
 const bodyparser =require('body-parser');
 const path =require('path');
 require('dotenv').config();
-
 const location=require('./models/location');
+const firebaseAdmin=require('./firebase');
+const admin = require('./models/admin');
 const app = express();
 
 app.use(express.static(path.join(__dirname,'client_web','build')));
 app.use(bodyparser.urlencoded());
 app.use(bodyparser.json());
+
 app.post('/add',async(req,res)=>{
     console.log(req.body);
     let datetime=new Date();
@@ -26,10 +28,11 @@ app.post('/add',async(req,res)=>{
             return 50
         }
     }
+
     console.log(req.body);
-    if(req.body.lon && req.body.lat && req.body.type ){
+    if(req.body.lng && req.body.lat && req.body.type ){
         let data = {
-            coordinates:[req.body.lat,req.body.lon],
+            coordinates:[req.body.lat,req.body.lng],
             type:req.body.type,
             range:req.body.range || range(req.body.type),
             desc:req.body.desc || "",
@@ -44,9 +47,11 @@ app.post('/add',async(req,res)=>{
         res.send("error");
     }
 });
+
 app.get('/',(req,res)=>{
     res.sendFile(path.join(__dirname,'client_web','build','index.html'));
 })
+
 app.post('/verify',async (req,res)=>{
     if(req.body.id){
         let doc = await location.findByIdAndUpdate(req.body.id,{verified:true});
@@ -75,26 +80,28 @@ app.post('/disable',async (req,res)=>{
 
 app.post('/upvote',async (req,res)=>{
     if(req.body.lng && req.body.lat){
-        let coords = [req.query.lat,req.query.lng];
-        let doc = await location.findOneAndUpdate({coordinates:coords},{$push:{up:1}});
+        let coords = [req.body.lat,req.body.lng];
+        let doc = await location.findOneAndUpdate({coordinates:coords},{$push:{up:'1'}});
+        res.send('sucess');
     }
 });
 
+
 app.post('/downvote',async (req,res)=>{
     if(req.body.lng && req.body.lat){
-        let coords = [req.query.lat,req.query.lng];
-        let doc = await location.findOneAndUpdate({coordinates:coords},{$push:{down:1}});
+        let coords = [req.body.lat,req.body.lng];
+        let doc = await location.findOneAndUpdate({coordinates:coords},{$push:{down:'1'}});
+        res.send('sucess');
     }
 });
 
 
 app.get('/check',async (req,res)=>{
-    let coords = [req.query.lat,req.query.lng];
     try{
+        let coords = [req.query.lat,req.query.lng];
         let e = await location.findOne({
             coordinates:coords,
         });
-        console.log(e);
         if(e){
             res.send(JSON.stringify({
                 lat:e.coordinates[0],
@@ -107,8 +114,8 @@ app.get('/check',async (req,res)=>{
                 expiring:e.expiring,
                 verified:e.verified,
                 photos:e.photos,
-                up:0,
-                down:0,
+                up:e.up.length,
+                down:e.down.length,
             }));
         }else{
             res.send('error');
@@ -128,7 +135,7 @@ app.get('/loaddata',async (req,res)=>{
     if(req.query.lat && req.query.lng){
         let coords = [req.query.lat,req.query.lng];
         console.log(coords);
-        let range = req.query.range || 500;
+        let range = req.query.range || 5000;
         let docs = await location.find({
             coordinates:{
                 $near:{
@@ -158,6 +165,7 @@ app.get('/loaddata',async (req,res)=>{
                 down:e.down.length,
             });
         })
+        console.log(d);
         res.json(d);
     }else{
         res.status(404);
@@ -165,12 +173,22 @@ app.get('/loaddata',async (req,res)=>{
 });
 
 
+app.post('/signup',async()=>{
+    try{
+        let {uid,email,phone,name} = req.body;
+        await user.create({
+            uid,email,phone,name,
+        });
+    }catch(e){
+
+    }
+});
 
 app.get('/getdata',async (req,res)=>{
     if(req.query.lat && req.query.lng){
         let coords = [req.query.lat,req.query.lng];
         console.log(coords);
-        let range = req.query.range || 500;
+        let range = req.query.range || 5000;
         let docs = await location.find({
             coordinates:{
                 $near:{
@@ -188,6 +206,24 @@ app.get('/getdata',async (req,res)=>{
         res.status(404);
     }
 });
+
+app.post('/admin',async(req,res)=>{
+    let {token} =req.body;
+    if(token){
+        const decodedToken = await firebaseAdmin.auth().verifyIdToken(token);
+        const uid = decodedToken.uid;
+        console.log(uid);
+        let user = await admin.findOne({uid});
+        if(user){
+            res.json({status:true})
+        }else{
+            res.json({status:false})
+        }
+    }else{
+        res.json({status:false})
+    }
+})
+
 
 
 

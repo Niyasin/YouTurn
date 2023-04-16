@@ -12,7 +12,7 @@ export default function AddPopup({close ,Point,reload}){
             xhr.setRequestHeader('Content-Type','application/json');
             xhr.send(JSON.stringify({
                 lat:Point[0],
-                lon:Point[1],
+                lng:Point[1],
                 type:type,
                 desc:desc,
                 range:range || null,

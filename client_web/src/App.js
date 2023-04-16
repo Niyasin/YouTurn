@@ -4,12 +4,43 @@ import {useEffect,useState} from 'react'
 import Sidepanel from './components/Sidepanel';
 import Nav from './components/Nav';
 import AddPopup from './components/AddPopup';
+import Login from './components/Login';
+import {auth,firebase} from './firebase'
+
+
+
 function App() {
   const [center,setCenter]=useState(null);
   const [markers,setMarkers]=useState([]);
   const [selected,setSelected]=useState(null);
   const [addpopup,setAddPopup]=useState(false);
   const [Point,setPoint]=useState(null);
+  const [loginPopup,setLoginPopup]=useState(false);
+  const [user,setUser]=useState(null);
+
+  const [admin,setAdmin]=useState(false);
+  
+  useEffect(()=>{
+    if(user){
+      auth.currentUser.getIdToken().then((token)=>{
+        let xhr = new XMLHttpRequest();
+        xhr.open('POST','/admin');
+        xhr.setRequestHeader('Content-Type','application/json');
+        xhr.send(JSON.stringify({
+          token
+        }));
+        xhr.onload=()=>{
+          if(xhr.responseText){
+            let res=JSON.parse(xhr.responseText);
+            if(res.status){
+              setAdmin(true);
+            }
+          }
+        }
+        
+      });
+    }
+  },[user]);
 
 
   useEffect(()=>{
@@ -55,12 +86,13 @@ const gotoCurrent=()=>{
     <Map center={[]} markers={markers} selected={selected} setSelected={setSelected} setPoint={setPoint} Point={Point} setAddPopup={setAddPopup}/>
     </>}
     {selected?
-      <Sidepanel data={selected} close={()=>{setSelected(null)}} reload={()=>{loadData(center)}}/>
-    :<>
+      <Sidepanel data={selected} close={()=>{setSelected(null)}} reload={()=>{loadData(center)}} admin={admin}/>
+      :<>
     <div className="loading"></div>
     </>}
-    <Nav setAddPopup={setAddPopup} setSelected={setSelected} refresh={()=>{loadData(center)}} gotoCurrent={gotoCurrent}/>
+    <Nav setAddPopup={setAddPopup} setLoginPopup={setLoginPopup} setSelected={setSelected} refresh={()=>{loadData(center)}} gotoCurrent={gotoCurrent} user={user} admin={admin} logout={()=>{auth.signOut();setUser(null);setAdmin(null)}}/>
     {addpopup?<AddPopup close={()=>{setAddPopup(false)}} Point={Point} reload={()=>{loadData(center)}}/>:<></>}
+    {loginPopup?<Login close={()=>{setLoginPopup(false)}} onlogin={setUser} />:<></>}
     </div>
   );
 }

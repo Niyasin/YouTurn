@@ -1,4 +1,4 @@
-export default function Sidepanel({data,close,reload}){
+export default function Sidepanel({data,close,reload,admin}){
 
 
     const verify=(id)=>{
@@ -35,7 +35,7 @@ export default function Sidepanel({data,close,reload}){
             reload();
         }
     }
-
+console.log(admin);
     return(
         <div className="sidepanel">
             <div className="head">
@@ -45,17 +45,20 @@ export default function Sidepanel({data,close,reload}){
             <div className="content">
                 <p>{data.desc}</p>
                 <div className="votes">
-                    <div className="up"><h4>{data.up.length}</h4>Down votes</div>
-                    <div className="down"><h4>{data.down.length}</h4>Up votes</div>
+                    <div className="up"><h4>{data.up.length}</h4>Up votes</div>
+                    <div className="down"><h4>{data.down.length}</h4>Down votes</div>
                 </div>
                 <div className="box">
                     <h2>Posted At</h2>
                     <span>{data.date.split("T")[0]}</span>
                     <span>{data.date.split("T")[1].substring(0,5)}</span>
-                    <div className="btngrp"> 
-                        {data.verified?<div className="button verified">Verified</div>:<div className="button" onClick={()=>{verify(data._id)}}>Verify</div>}
-                        {!data.status?<div className="button" onClick={()=>{enable(data._id)}}>Enable</div>:<div className="button verified" onClick={()=>{disable(data._id)}}>Disable</div>}
-                    </div>
+                    {admin?<>
+                        <div className="btngrp"> 
+                            {data.verified?<div className="button verified">Verified</div>:<div className="button" onClick={()=>{verify(data._id)}}>Verify</div>}
+                            {!data.status?<div className="button" onClick={()=>{enable(data._id)}}>Enable</div>:<div className="button verified" onClick={()=>{disable(data._id)}}>Disable</div>}
+                        </div>
+                    </>:<>
+                    </>}
                 </div>
                 <div className="box">
                     <h2>Expires </h2>

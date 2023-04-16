@@ -14,7 +14,6 @@ const locationSchema =new mongoose.Schema({
     up:[{type:String}],
     down:[{type:String}],
     verified:{type:Boolean}
-
 });
 
 

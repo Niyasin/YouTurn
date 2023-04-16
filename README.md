@@ -21,8 +21,8 @@ node app
 * Node JS
 * Flutter
 
-## How To Run Web App & Server
-to buld the application use
+## How To Run Flutter
+flutter project is located in client_flutter folder, to buld the application use
 ```bash
 flutter pub get
 flutter build apk --release

@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 
 class AddDis extends StatefulWidget {
@@ -53,9 +52,9 @@ class _AddDisState extends State<AddDis> {
                 autofocus: true,
                 items: tags
                     .map((e) => DropdownMenuItem(
-                  value: e,
-                  child: Text(e),
-                ))
+                          value: e,
+                          child: Text(e),
+                        ))
                     .toList(),
                 onChanged: (value) {
                   selectedLetter = value as String?;
@@ -65,24 +64,25 @@ class _AddDisState extends State<AddDis> {
             height: 20,
           ),
           Padding(
-            padding: const EdgeInsets.only(left: 20,right: 20),
+            padding: const EdgeInsets.only(left: 20, right: 20),
             child: OutlinedButton(
                 style: ButtonStyle(
                     shape: MaterialStateProperty.all(RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10))),
                     side: MaterialStateProperty.all(
                         BorderSide(color: Colors.black, width: 3)),
-                    foregroundColor:
-                    MaterialStateProperty.all(Colors.black),
+                    foregroundColor: MaterialStateProperty.all(Colors.black),
                     minimumSize: MaterialStateProperty.all(Size(200, 50)),
-                    textStyle: MaterialStateProperty.all(TextStyle(
-                        fontWeight: FontWeight.bold, fontSize: 19))),
+                    textStyle: MaterialStateProperty.all(
+                        TextStyle(fontWeight: FontWeight.bold, fontSize: 19))),
                 onPressed: () {},
                 child: Text("Add Images")),
           ),
-          SizedBox(height: 30,),
+          SizedBox(
+            height: 30,
+          ),
           Padding(
-            padding: const EdgeInsets.fromLTRB(50,15,50,0),
+            padding: const EdgeInsets.fromLTRB(50, 15, 50, 0),
             child: ElevatedButton(
                 style: ButtonStyle(
                     shape: MaterialStateProperty.all(RoundedRectangleBorder(

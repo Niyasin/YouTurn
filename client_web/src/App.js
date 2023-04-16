@@ -1,4 +1,4 @@
-import {MapContainer,TileLayer,Marker,Circle,useMapEvent} from 'react-leaflet'
+import {MapContainer,TileLayer,Marker,Circle,useMapEvent,useMap} from 'react-leaflet'
 import L, { point } from 'leaflet'
 import {useEffect,useState} from 'react'
 import Sidepanel from './components/Sidepanel';
@@ -10,7 +10,7 @@ import {auth,firebase} from './firebase'
 
 
 function App() {
-  const [center,setCenter]=useState(null);
+  const [center,setCenter]=useState([11.833261768039069,75.9700440221417]);
   const [markers,setMarkers]=useState([]);
   const [selected,setSelected]=useState(null);
   const [addpopup,setAddPopup]=useState(false);
@@ -101,10 +101,19 @@ export default App;
 
 
 const Map = ({center,markers,setSelected,selected,setPoint,Point,setAddPopup})=>{
-  
+
+  function ChangeView({center}) {
+    const map = useMap();
+    map.setView(center, map.getZoom());
+    return null;
+  }
+  useEffect(()=>{
+  },[center]);
   return(
-      <MapContainer  center={[11.833261768039069,75.9700440221417]} zoom={40} scrollWheelZoom={true} onClick={()=>{console.log("🍭");}}>
+      <MapContainer  center={center} zoom={40} scrollWheelZoom={true} onClick={()=>{console.log("🍭");}}>
+        <ChangeView center={center} zoom={40}/>
         <TileLayer url='https://tile.openstreetmap.org/{z}/{x}/{y}.png' />
+        <Marker position={center}  icon={L.icon({ iconUrl:`./icons/current.png`, iconSize:[20,20]}) }/>
         {Point?<Marker position={Point} eventHandlers={{click:()=>{setAddPopup(true);}}} icon={L.icon({ iconUrl:`./icons/main.png`, iconSize:[30,30]}) }/>:<></>}
         {markers.map((m,i)=>{
           return(<>

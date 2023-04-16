@@ -19,7 +19,8 @@ node app
 ## Requirements
 * MongoDB
 * Node JS
-* Flutter
+* Flutter SDK
+* Android Studio
 
 ## How To Run Flutter
 flutter project is located in client_flutter folder, to buld the application use
@@ -28,7 +29,8 @@ flutter pub get
 flutter build apk --release
 ```
 
-to run the application use
+to run the application in debug mode use
 ```bash
+flutter pub get
 flutter run lib/main.dart
 ```

@@ -1,8 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 
-import '../Home/HomeMap.dart';
+import '../pages/HomeMap.dart';
 
 class LoginWithPhone extends StatefulWidget {
   const LoginWithPhone({Key? key}) : super(key: key);
@@ -34,15 +33,21 @@ class _LoginWithPhoneState extends State<LoginWithPhone> {
         body: SingleChildScrollView(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
-            children: [const SizedBox(
-              height: 50,
-            ),
+            children: [
+              const SizedBox(
+                height: 50,
+              ),
               Row(
-                children: const [SizedBox(width: 20,),
+                children: const [
+                  SizedBox(
+                    width: 20,
+                  ),
                   Text(
                     "Enter your phone number : ",
                     style: TextStyle(
-                        fontWeight: FontWeight.bold, color: Colors.black, fontSize: 20),
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                        fontSize: 20),
                   ),
                 ],
               ),
@@ -57,11 +62,11 @@ class _LoginWithPhoneState extends State<LoginWithPhone> {
                       focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(20),
                           borderSide:
-                          BorderSide(color: Colors.black, width: 3)),
+                              BorderSide(color: Colors.black, width: 3)),
                       enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(20),
                           borderSide:
-                          BorderSide(color: Colors.black, width: 2))),
+                              BorderSide(color: Colors.black, width: 2))),
                 ),
               ),
               Visibility(
@@ -76,16 +81,15 @@ class _LoginWithPhoneState extends State<LoginWithPhone> {
                         focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(20),
                             borderSide:
-                            BorderSide(color: Colors.black, width: 3)),
+                                BorderSide(color: Colors.black, width: 3)),
                         enabledBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(20),
                             borderSide:
-                            BorderSide(color: Colors.black, width: 2))),
+                                BorderSide(color: Colors.black, width: 2))),
                   ),
                 ),
                 visible: otpVisibility,
               ),
-
               SizedBox(
                 height: 60,
               ),
@@ -96,8 +100,7 @@ class _LoginWithPhoneState extends State<LoginWithPhone> {
                       padding: MaterialStateProperty.all(EdgeInsets.only(
                           left: 50, right: 50, top: 15, bottom: 15)),
                       foregroundColor: MaterialStateProperty.all(Colors.white),
-                      backgroundColor:
-                      MaterialStateProperty.all(Colors.black),
+                      backgroundColor: MaterialStateProperty.all(Colors.black),
                       minimumSize: MaterialStateProperty.all(Size(200, 50)),
                       textStyle: MaterialStateProperty.all(TextStyle(
                         fontSize: 20,
@@ -111,7 +114,6 @@ class _LoginWithPhoneState extends State<LoginWithPhone> {
                     }
                   },
                   child: Text(otpVisibility ? "Verify" : "Login")),
-
             ],
           ),
         ),
@@ -128,14 +130,7 @@ class _LoginWithPhoneState extends State<LoginWithPhone> {
         });
       },
       verificationFailed: (FirebaseAuthException e) {
-        Fluttertoast.showToast(
-            msg: "Failed",
-            toastLength: Toast.LENGTH_SHORT,
-            gravity: ToastGravity.BOTTOM,
-            timeInSecForIosWeb: 1,
-            backgroundColor: Colors.red,
-            textColor: Colors.white,
-            fontSize: 16.0);
+        print("Failed");
       },
       codeSent: (String verificationId, int? resendToken) {
         otpVisibility = true;
@@ -151,15 +146,11 @@ class _LoginWithPhoneState extends State<LoginWithPhone> {
         verificationId: verificationID, smsCode: otpController.text);
 
     await auth.signInWithCredential(credential).then((value) {
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const HomeMap(),));
-      Fluttertoast.showToast(
-          msg: "Success",
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.BOTTOM,
-          timeInSecForIosWeb: 1,
-          backgroundColor: Colors.green,
-          textColor: Colors.white,
-          fontSize: 16.0);
+      Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const HomeMap(),
+          ));
     });
   }
 }

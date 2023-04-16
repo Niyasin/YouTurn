@@ -10,7 +10,8 @@ class AddImage extends StatefulWidget {
 class _AddImageState extends State<AddImage> {
   @override
   Widget build(BuildContext context) {
-    return SafeArea(child: Scaffold(
+    return SafeArea(
+        child: Scaffold(
       appBar: AppBar(
         title: Text("Add Details"),
         centerTitle: true,
@@ -30,7 +31,6 @@ class _AddImageState extends State<AddImage> {
               ],
             ),
           ),
-
           SizedBox(
             height: 20,
           ),
@@ -65,14 +65,11 @@ class _AddImageState extends State<AddImage> {
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
                     ))),
-                onPressed: () {
-
-                },
+                onPressed: () {},
                 child: Text("Submit")),
           ),
         ],
       ),
-
     ));
   }
 }

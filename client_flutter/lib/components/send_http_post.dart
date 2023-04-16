@@ -11,8 +11,8 @@ Future<String> sendHttpPost({
   required String up,
   required String down,
 }) async {
-  String uri = "192.168.249.183:8080";
-  final url = Uri.parse("http://$uri/add");
+  String uri = "youturn.onrender.com";
+  final url = Uri.parse("https://$uri/add");
 
   try {
     var payload = NewTagPayload(
@@ -56,8 +56,8 @@ Future<String> doUpVotePost({
   required String up,
   required String down,
 }) async {
-  String uri = "192.168.249.183:8080";
-  final url = Uri.parse("http://$uri/upvote");
+  String uri = "youturn.onrender.com";
+  final url = Uri.parse("https://$uri/upvote");
 
   try {
     var payload = NewTagPayload(
@@ -101,8 +101,8 @@ Future<String> doDownVotePost({
   required String up,
   required String down,
 }) async {
-  String uri = "192.168.249.183:8080";
-  final url = Uri.parse("http://$uri/downvote");
+  String uri = "youturn.onrender.com";
+  final url = Uri.parse("https://$uri/downvote");
 
   try {
     var payload = NewTagPayload(

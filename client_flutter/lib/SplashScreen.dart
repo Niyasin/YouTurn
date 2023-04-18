@@ -1,3 +1,6 @@
+///This is the splash screen page of the application. 
+///The image "3.png" is displayed in the splash screen. If you find a splash screen is unecessary,
+///its okay to remove it as this does not affect the functionality of the app
 import 'package:flutter/material.dart';
 
 import 'Login/loginGoogle.dart';

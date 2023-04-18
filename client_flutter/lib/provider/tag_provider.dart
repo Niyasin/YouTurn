@@ -1,3 +1,4 @@
+///This is the provider of the application used for state management.
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:http/http.dart' as http;
@@ -10,6 +11,7 @@ import '../components/tag_data.dart';
 
 import 'package:location/location.dart';
 
+///These are the data members used in the application
 List<LatLng> tappedPoints = [];
 List<LatLng> confirmedPoints = [];
 List<Marker> markers = [];
@@ -19,7 +21,7 @@ String range = "50";
 final location = Location();
 bool _isLoggedIn = false;
 
-//controllers
+//Controllers used in the provided. These conntrollers are passed when calling functions
 final MapController mapController = MapController(); //contoller for map
 final DraggableScrollableController bottomSheetController =
     DraggableScrollableController(); //controller for bottom sheet
